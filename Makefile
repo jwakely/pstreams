@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.6 2002/04/25 01:59:25 redi Exp $
+# $Id: Makefile,v 1.4.4.1 2002/08/26 23:49:19 redi Exp $
 # PStreams Makefile
 # Copyright (C) Jonathan Wakely
 #
@@ -31,12 +31,17 @@ DISTFILES= $(SOURCES) $(DOCS) $(EXTRA_DIST)
 
 all: test distro
 
-test: test_pstreams test_minimum
+test: test_pstreams test_bidip test_minimum
+	@echo -n "Testing whether popen() uses bidirectional pipe ... "
 	@./test_minimum >/dev/null
+	@./test_bidip >/dev/null && echo "Yes" || echo "No"
 	@./test_pstreams >/dev/null || echo "TEST EXITED WITH STATUS $?"
 
 test_pstreams: test_pstreams.cc pstream.h
 	$(CXX) $(CXXFLAGS) -g3 -o $@ $<
+
+test_bidip: test_bidip.c
+	$(CC) $(CFLAGS) -o $@ $<
 
 test_minimum: test_minimum.cc pstream.h
 	$(CXX) $(CXXFLAGS) -o $@ $<
