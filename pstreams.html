@@ -1,14 +1,27 @@
-
-<!-- start of included file -->
-
-<!-- $Id: pstreams.html,v 1.11 2002/04/25 02:12:50 redi Exp $ -->
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html>
+<head>
+  <!-- $Id: pstreams.html,v 1.7.4.1 2002/08/27 00:20:45 redi Exp $ -->
+  <title>Redi PStreams Library</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta name='description' content='PStreams - A C++ IOStream interface to POSIX Process I/O'>
+  <meta name='keywords' content='pstreams, pstream, c++, popen, pclose, posix, process I/O, ipstream, opstream, iostream, iostreams, procbuf, pfstream'>
+  <style type='text/css'>
+    address { font-style: italic; font-size: smaller; }
+    img { border: 0; }
+    p { text-align: justify; }
+    .note { font-style: italic; font-size: smaller; }
+    .right { float: right; }
+  </style>
+</head>
+<body>
 <div><a name='top'></a></div>
 <table width='100%'>
 <tbody>
 <tr>
 <td>
-<h3>A C++ IOStream interface to POSIX Process I/O.</h3>
+<h1>PStreams Library</h1>
+<p>A C++ IOStream interface to POSIX Process I/O.</p>
 </td>
 <td align='right'>
 <img src='images/pstreams1.png' alt=''>
@@ -16,10 +29,10 @@
 </tr>
 </tbody>
 </table>
-<p>The library is a work in progress. It is intended to provide a C++
-re-implementation of the POSIX.2 functions <code>popen(3)</code> and
-<code>pclose(3)</code>, using IOStreams to read from and write to the
-opened process.</p>
+<p>The library is a work in progress. When (or rather, if) finished it will
+provide a C++ interface to the POSIX.2 functions <code>popen(3)</code> and
+<code>pclose(3)</code>,<a href='#footnote1' class='ref'>[1]</a>
+using IOStreams to read from or write to the opened process.</p>
 <p>The inspiration for this project came from seeing a
 <!-- a href='http://gcc.gnu.org/ml/libstdc++/2001-11/msg00107.html' -->message<!-- /a -->
 on the <a href='http://gcc.gnu.org/libstdc++/'>libstdc++-v3</a> mailing list
@@ -28,70 +41,34 @@ with libstdc++-v2.
 Because I'd used a similar C++ wrapper for <code>popen()</code> where I work,
 and because I want to learn about Standard IOStreams, I decided to try to
 write a solution that would work with standard-conforming C++ libraries.
-(The <code>pfstream</code> classes were based on the old AT&amp;T-style
-IOStreams and relied on <a href='http://gcc.gnu.org/'>GCC</a>-specific
+(The <code>pfstream</code> classes were based on the old AT&amp;T style
+streams and relied on <a href='http://gcc.gnu.org/'>GCC</a>-specific
 libraries.)</p>
-<p>The aim is to provide class templates in the style of the standard IOStreams
+<p>My aim is to provide class templates in the style of the standard IOStreams
 that can be used with any standard-conforming compiler on a POSIX platform.
-This involves writing a <code>streambuf</code> class that uses
-<code>fork()</code> and the <code>exec</code> family of functions to
-create a new process.</p>
-<p>The advantages over the standard <code>popen()</code> function are:
-<ul>
-<li>Standard C++ interface. PStreams classes can be used in any code that
-expects an IOStream class, giving all the advantages of type-safety and
-localisation that IOStreams have over the
-<code>printf()</code>/<code>scanf()</code> functions in standard C.</li>
-<li>Bidirectional I/O. Implementations of <code>popen()</code> vary
-between systems. Some systems use bidirectional pipes, allowing reading
-and writing on the same stream, but this is not supported everywhere.
-Because PStreams doesn't use <code>popen()</code> but re-implements it
-at a lower level, bidirectional I/O is available on all systems.</li>
-<li>Reading from the process' <code>stderr</code>. Input PStreams can read
-from the process' <code>stderr</code> as well as <code>stdout</code>.</li>
-<li>More flexible interface. In addition to handling a shell command in
-the same way as <code>popen()</code> the PStreams classes can open a process
-specified by a filename and a vector of arguments, similar to the
-<code>execv()</code> function.</li>
-</ul>
+This will involve writing a <code>streambuf</code> class that uses the
+<code>FILE*</code> returned by <code>popen()</code>.
+This may take me a while, so initially the library will only work
+on certain versions of GCC (if at all!) and will have no support for
+character traits or wide characters.</p>
+<!-- TODO update above text, mention erripstreams -->
 <p>The library is available under the <a href='http://www.gnu.org/'>GNU</a>
-<a href='http://www.gnu.org/licenses/gpl.txt'>General Public License</a>
-<p>To help improve PStreams see the
-<a href="http://sf.net/projects/pstreams/">SourceForge project page</a>.</p>
-
+<a href='http://www.gnu.org/licenses/lgpl.txt'>Lesser General Public License</a>
 <p>&nbsp;</p>
 <h2><a name='status'>Current status</a></h2>
-<p>Version 0.34</p>
+<p>Version 0.16</p>
 <p>Working <code>ipstream</code> and <code>opstream</code> classes for
 ISO C++-compliant compilers.
-The stream buffer class, <code>pstreambuf</code>, doesn't use
-<code>popen()</code>. It uses up to three
-pipes shared with the associated process, giving access to any combination
-of the process' <code>stdin</code>, <code>stdout</code> and <code>stderr</code>
-streams.</p>
-<p>Another class, <code>rpstream</code> (Restricted PStream) is similar to
-<code>pstream</code> except that the child process' <code>stdout</code>
-and/or <code>stderr</code> cannot be read directly from an
-<code>rpstream</code>. To read from the process you must call either
-<code>rpstream::out()</code> or <code>rpstream::err()</code> to obtain a
-reference to an <code>istream</code> that reads from the process' 
-corresponding output stream. This class is not as well tested as the others
-(i.e. it's hardly tested at all).</p>
-<p>The PStreams classes do not currently do any buffering.
-This means that a call to <code>write(2)</code> or <code>read(2)</code>
-is made for every character, I doubt this is very efficient!</p>
-<p>No code-conversion is performed on multi-byte character streams.
-It should be possible to use the PStream classes templatized with character
-types other than <code>char</code> (e.g. <code>basic_pstream&lt;int&gt;</code>)
-but note that characters are transfered in a bytewise manner, so it is the
-programmer's responsibility to interpret the resulting character strings.
-Since the classes are intended to be used to read/write data between
-processes, which will usually share an internal character representation,
-rather than to/from files, this behaviour should be sufficient.</p>
+<code>pstream</code> class for systems known to use a bidirectional pipe
+to implement <code>popen()</code>.<a href='#footnote2' class='ref'>[2]</a></p>
+<p>I am currently working on a new implementation of the stream buffer class,
+<code>pstreambuf</code>, that doesn't use <code>popen()</code>. The stream
+buffer uses up to three pipes shared with the associated process, giving
+access to any combination of the process' <code>stdin</code>,
+ <code>stdout</code> and <code>stderr</code> streams.</p>
 <p>For non-ISO C++-compliant compilers there are alternative versions of
 all classes.
-<em>These alternative versions are unsupported and not under development!</em>
-They use non-standard extensions found in some old IOStream implementations
+These use non-standard extensions found in the old streams
 (such as attaching an <code>fstream</code>'s buffer to a file descriptor with
 <code>fstreambase::attach(int fd)</code>) that may not be available on some
 systems.
@@ -100,10 +77,9 @@ implemented using <code>fstream</code> and provide no more functionality
 than the <code>pfstream</code> classes provided with libg++.
 For all other compilers these classes have never even been compiled, let
 alone tested, so use them at your own risk.
-<br />The non-compliant versions are defined in the pstream_compat.h file
-and can be used by defining <code>BACK_COMPAT</code>
-(or <code>GCC_BACK_COMPAT</code> for the libg++ versions)
-to be <code>1</code>.
+<br />The non-compliant versions can be used by defining
+<code>BACK_COMPAT</code> (or <code>GCC_BACK_COMPAT</code> for the libg++
+versions) to be <code>1</code>.
 <br />Instantiating the backward-compatible <code>ipstream</code> or
 <code>opstream</code>
 currently sets <code>errno</code> to <code>ESPIPE</code> because the
@@ -111,103 +87,83 @@ currently sets <code>errno</code> to <code>ESPIPE</code> because the
 is not allowed for pipes. <code>errno</code> is reset by the classes.</p>
 <p>&nbsp;</p>
 <h2><a name='usage'>Usage</a></h2>
-<p class='note'>Please refer to the doxygen-generated documentation,
-accessible through the links at the top of the page.</p>
+<p class='note'>This section is out of date. Please use the doxygen-generated
+documentation, accessible through the links at the top of the page.</p>
+<p>The PStreams classes have a common public interface.
+<code>ipstream</code> is shown here, but <code>opstream</code> is the same
+(as is <code>pstream</code> where available).</p>
+<pre><code>
+class ipstream {
+public:
+    ipstream();
+    ipstream(const std::string&amp; command);
+    void open(const std::string&amp; command);
+};
+</code>
+<code>ipstream();</code>
+    Creates a new object with no associated process.
+
+<code>ipstream(const std::string&amp; command);</code>
+    Passes command to /bin/sh and opens a pipe to the new process.
+
+<code>void open(const std::string&amp; command);</code>
+     Passes command to /bin/sh and opens a pipe to the new process.
+</pre>
+<p>The  command  argument  is  a pointer to a null-terminated
+string containing a shell command line.  This  command  is
+passed  to  /bin/sh  using the -c flag; interpretation, if
+any, is performed by the shell.</p>
 <p>Using the PStreams classes is similar to using a <code>std::fstream</code>,
 except that a shell command is given rather than a filename:</p>
 <pre><code>
 // print names of all header files in current directory
-redi::ipstream in("ls ./*.h");
+redi::ipstream in("/bin/ls ./*.h");
 std::string str;
 while (in &gt;&gt; str) {
     std::cout &lt;&lt; str &lt;&lt; std::endl;
 }
 </code></pre>
-<p>The  command  argument  is  a pointer to a null-terminated
-string containing a shell command line.  This  command  is
-passed  to  /bin/sh  using the -c flag; Alias and wildcard interpretation,
-if any, is performed by the shell.</p>
-<p>Alternatively, the process can be started with a vector of arguments:</p>
-<pre><code>
-// remove some files, capturing any error messages
-std::vector&lt;std::string&gt; argv;
-std::vector&lt;std::string&gt; errors;
-argv.push_back("rm");
-argv.push_back("-rf");
-argv.push_back("./foo.txt");
-argv.push_back("./bar.html");
-argv.push_back("./fnord/");
-redi::ipstream in("rm", argv, pstreambuf::pstderr);
-std::string errmsg;
-while (std::getline(in, errmsg)) {
-    errors.push_back(errmsg);
-}
-</code></pre>
-<p>If this form of initialisation is used and the file argument doesn't
-contain a slash then the actions of the shell
-will be duplicated in searching for an executable in <code>PATH</code>.
-The shell will not interpret the other arguments, so wildcard expansion will
-not take place if this interface is used.</p>
-<p>If an <code>rpstream</code> was used in the example above it would be
-necessary to replace the while condition like so:</p>
-<pre><code>
-while (std::getline(in<strong>.err()</strong>, errmsg)) {
-    errors.push_back(errmsg);
-}
-</code></pre>
-<p>This form can also be used with the unrestricted <code>pstream</code>
-and <code>ipstream</code> classes, but it is not strictly necessary.</p>
-<p><a href='#top'>top</a></p>
+<p>Note that the PStreams classes do not do any buffering, because the
+stream returned by <code>popen()</code> is buffered by the OS by default.
+This means that a call to <code>fwrite(3)</code> or <code>fread(3)</code>
+is made for every character, I don't know whether this is very efficient.</p>
 
 <p>&nbsp;</p>
 <h2><a name='download'>Download</a></h2>
-<p>The "library" currently consists of a two header files,
-<a href='pstream.h'>pstream.h</a>, which defines the basic PStreams
-class templates in the <code>redi</code> namespace, and
-<a href='rpstream.h'>rpstream.h</a> which adds the <code>rpstream</code>
-Restriceted PStream class template.</p>
-<p>The backward-compatible (non-standard, unsupported, probably don't even
-work) PStreams classes are in the file
-<a href='pstream_compat.h'>pstream_compat.h</a>.</p>
+<p>The "library" currently consists of a single header file,
+<a href='pstream.h'>pstream.h</a>, which defines the PStreams classes
+in the <code>redi</code> namespace.</p>
 <p><a href='#top'>top</a></p>
-
-<p>&nbsp;</p>
-<h2><a name='credits'>Credits</a></h2>
-<p>
-Angelika langer &amp; Klaus Kreft for the invaluable examples in their book
-<cite>Standard C++ IOStreams and Locales</cite>.
-<br>
-John Levon for comments and advice on the interface design.
-<br>
-Whoever who wrote the <code>ChildReader</code> class for the
-<a href='http://www.lyx.org'>LyX</a> project, which was a good starting
-point when replacing <code>popen()</code> with hand-rolled fork/exec code.
-<br>
-Per Bothner et al. for the <code>pfstream</code> classes in the old libg++.
-</p>
+<hr>
+<p class='note'><a name='footnote1'>[1]</a> Implementations of
+<code>popen()</code> and <code>pclose()</code> vary slightly between systems.
+Some systems use bidirectional pipes, allowing reading and writing on the
+same stream, but this is not supported everywhere.
+Check your local documentation for details of return types and errors.
+The 4.3 BSD implementation seems to be fairly typical, you can read the
+<a href='http://www.freebsd.org/cgi/man.cgi?query=popen&amp;apropos=0&amp;sektion=3&amp;manpath=4.3BSD+NET%2F2&amp;format=html'>man page</a>
+at www.FreeBSD.org</p>
+<!-- TODO find POSIX spec of popen -->
+<p class='note'><a name='footnote2'>[2]</a> The <code>pstream</code> class
+is currently available on FreeBSD version 3 and above and
+NetBSD version 1.4 and above.</p>
 <p><a href='#top'>top</a></p>
-
 <hr>
 <address>
 <p>Please send comments, suggestions, bugfixes, patches, cakes, pies etc. to
 pstreams&nbsp;at&nbsp;redi&nbsp;dot&nbsp;uklinux&nbsp;dot&nbsp;net
-<br />This page last updated on $Date: 2002/04/25 02:12:50 $
-<br />Copyright &copy; 2001,2002 Jonathan Wakely</p>
+<br />This page last updated on $Date: 2002/08/27 00:20:45 $
+<br />Copyright &copy; 2001 Jonathan Wakely</p>
 </address>
 <p>
-<a href="http://sourceforge.net"><img
-src="http://sourceforge.net/sflogo.php?group_id=48695&type=1"
-alt="SourceForge Logo" border="0"></a>
-&nbsp;
 <a href="http://validator.w3.org/check/referer"><img
   src="http://www.w3.org/Icons/valid-html40"
   alt="Valid HTML 4.0!" height="31" width="88"></a>
-&nbsp;
 <a href="http://jigsaw.w3.org/css-validator/"><img
   style="border:0;width:88px;height:31px"
   src="http://jigsaw.w3.org/css-validator/images/vcss" 
   alt="Valid CSS!"></a>
 </p>
-
-<!-- end of included file -->
+</body>
+</html>
 
