@@ -4,7 +4,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = PStreams
 PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY       = doc/
+OUTPUT_DIRECTORY       = ./doc
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = 
 EXTRACT_PRIVATE        = 
@@ -51,7 +51,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = pstream.h rpstream.h
+INPUT                  = pstream.h
 FILE_PATTERNS          = 
 RECURSIVE              = 
 EXCLUDE                = 
