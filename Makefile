@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# TODO configure script (allow doxgenating of EVISCERATE functions)
+# TODO configure script (allow doxygenating of EVISCERATE functions)
 
 OPTIM= -O1 -g3
 EXTRA_CFLAGS=
