@@ -1621,21 +1621,20 @@ namespace redi
     std::streamsize
     basic_pstreambuf<C,T>::xsputn(const char_type* s, std::streamsize n)
     {
-      if (n < this->epptr() - this->pptr())
+      std::streamsize done = 0;
+      while (done < n)
       {
-        traits_type::copy(this->pptr(), s, n);
-        this->pbump(n);
-        return n;
-      }
-      else
-      {
-        for (std::streamsize i = 0; i < n; ++i)
+        if (std::streamsize nbuf = this->epptr() - this->pptr())
         {
-          if (traits_type::eq_int_type(this->sputc(s[i]), traits_type::eof()))
-            return i;
+          nbuf = std::min(nbuf, n - done);
+          traits_type::copy(this->pptr(), s + done, nbuf);
+          this->pbump(nbuf);
+          done += nbuf;
         }
-        return n;
+        else if (!empty_buffer())
+          break;
       }
+      return done;
     }
 
   /**
