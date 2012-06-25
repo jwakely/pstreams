@@ -42,12 +42,10 @@ VERS := $(shell awk -F' ' '/^\#define *PSTREAMS_VERSION/{ print $$NF }' pstream.
 
 all: docs $(GENERATED_FILES)
 
-check: pstreams.wout run_tests
-
-test: check
-
-run_tests: test_pstreams test_minimum
+check: test_pstreams test_minimum | pstreams.wout
 	@for test in $^ ; do echo $$test ; ./$$test >/dev/null 2>&1 || echo "$$test EXITED WITH STATUS $$?" ; done
+
+test run_tests: check
 
 test_%: test_%.cc pstream.h
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(LDFLAGS) -o $@ $<
