@@ -1187,12 +1187,9 @@ namespace redi
               // parent can get error code from ck_exec pipe
               error_ = errno;
 
-              ssize_t wrote = ::write(ck_exec[WR], &error_, sizeof(error_));
-              if (wrote == -1)
-              {
-                // Suppress warn_unused_result attribute with _FORTIFY_SOURCE.
-                // Process is about to exit anyway, no need for a better check.
-              }
+              while (::write(ck_exec[WR], &error_, sizeof(error_)) == -1
+                  && errno == EINTR)
+              { }
 
               ::close(ck_exec[WR]);
               ::close(ck_exec[RD]);
