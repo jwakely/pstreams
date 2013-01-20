@@ -198,6 +198,20 @@ int main()
     }
 
     {
+        // test execve() style construction
+        //
+        // This should read the strings on stdin and print them on stdout
+        // prefixed by "STDIN: "
+
+        pstreams::argv_type argv;
+        argv.push_back("sed");
+        argv.push_back("s/^/STDIN: /");
+        opstream os(argv);
+
+        check_pass(os << "Tragic Donkey\n");
+    }
+
+    {
         // test unformatted output
         //
         // This should read the strings on stdin and print them on stdout
@@ -842,8 +856,6 @@ int main()
         print_result(dummy, gcount == count);
         wcout << L"Read: " << gcount << L" chars." << endl;
     }
-
-
 
 
     return exit_status;

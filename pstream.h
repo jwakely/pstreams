@@ -1,6 +1,6 @@
 /*
 PStreams - POSIX Process I/O for C++
-Copyright (C) 2001-2012 Jonathan Wakely
+Copyright (C) 2001-2013 Jonathan Wakely
 
 This file is part of PStreams.
 
@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0072   // 0.7.2
+#define PSTREAMS_VERSION 0x0073   // 0.7.3
 
 /**
  *  @namespace redi
@@ -399,6 +399,20 @@ namespace redi
       { }
 
       /**
+       * @brief Constructor that initialises the stream by starting a process.
+       *
+       * Initialises the stream buffer by calling
+       * @c do_open(argv[0],argv,mode|pstdout)
+       *
+       * @param argv  a vector of argument strings passed to the new program.
+       * @param mode  the I/O mode to use when opening the pipe.
+       * @see   do_open(const std::string&, const argv_type&, pmode)
+       */
+      basic_ipstream(const argv_type& argv, pmode mode = pstdout)
+      : istream_type(NULL), pbase_type(argv.at(0), argv, mode|pstdout)
+      { }
+
+      /**
        * @brief Destructor.
        *
        * Closes the stream and waits for the child to exit.
@@ -527,6 +541,20 @@ namespace redi
       { }
 
       /**
+       * @brief Constructor that initialises the stream by starting a process.
+       *
+       * Initialises the stream buffer by calling
+       * @c do_open(argv[0],argv,mode|pstdin)
+       *
+       * @param argv  a vector of argument strings passed to the new program.
+       * @param mode  the I/O mode to use when opening the pipe.
+       * @see   do_open(const std::string&, const argv_type&, pmode)
+       */
+      basic_opstream(const argv_type& argv, pmode mode = pstdin)
+      : ostream_type(NULL), pbase_type(argv.at(0), argv, mode|pstdin)
+      { }
+
+      /**
        * @brief Destructor
        *
        * Closes the stream and waits for the child to exit.
@@ -633,6 +661,20 @@ namespace redi
                      const argv_type& argv,
                      pmode mode = pstdout|pstdin )
       : iostream_type(NULL), pbase_type(file, argv, mode)
+      { }
+
+      /**
+       * @brief Constructor that initialises the stream by starting a process.
+       *
+       * Initialises the stream buffer by calling
+       * @c do_open(argv[0],argv,mode)
+       *
+       * @param argv  a vector of argument strings passed to the new program.
+       * @param mode  the I/O mode to use when opening the pipe.
+       * @see   do_open(const std::string&, const argv_type&, pmode)
+       */
+      basic_pstream(const argv_type& argv, pmode mode = pstdout|pstdin)
+      : iostream_type(NULL), pbase_type(argv.at(0), argv, mode)
       { }
 
       /**
@@ -774,6 +816,21 @@ namespace redi
                       const argv_type& argv,
                       pmode mode = pstdout|pstdin )
       : ostream_type(NULL), istream_type(NULL), pbase_type(file, argv, mode)
+      { }
+
+      /**
+       * @brief Constructor that initialises the stream by starting a process.
+       *
+       * Initialises the stream buffer by calling
+       * @c do_open(argv[0],argv,mode)
+       *
+       * @param argv  a vector of argument strings passed to the new program.
+       * @param mode  the I/O mode to use when opening the pipe.
+       * @see   do_open(const std::string&, const argv_type&, pmode)
+       */
+      basic_rpstream(const argv_type& argv, pmode mode = pstdout|pstdin)
+      : ostream_type(NULL), istream_type(NULL),
+        pbase_type(argv.at(0), argv, mode)
       { }
 
       /// Destructor
