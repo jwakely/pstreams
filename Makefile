@@ -20,7 +20,6 @@
 # TODO configure script (allow doxygenating of EVISCERATE functions)
 
 OPTIM= -O1 -g3
-EXTRA_CFLAGS=
 EXTRA_CXXFLAGS=
 
 CFLAGS=-pedantic -Werror -Wall -W -Wpointer-arith -Wcast-qual -Wcast-align -Wredundant-decls $(OPTIM)
