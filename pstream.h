@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0073   // 0.7.3
+#define PSTREAMS_VERSION 0x0080   // 0.8.0
 
 /**
  *  @namespace redi
@@ -138,6 +138,10 @@ namespace redi
       /// Send a signal to the process.
       basic_pstreambuf*
       kill(int signal = SIGTERM);
+
+      /// Send a signal to the process' process group.
+      basic_pstreambuf*
+      killpg(int signal = SIGTERM);
 
       /// Close the pipe connected to the process' stdin.
       void
@@ -1307,6 +1311,12 @@ namespace redi
               ::dup2(perr[WR], STDERR_FILENO);
               ::close(perr[WR]);
             }
+
+#ifdef _POSIX_JOB_CONTROL
+            // Change to a new process group
+            ::setpgid(0, 0);
+#endif
+
             break;
           }
           case -1 :
@@ -1545,6 +1555,41 @@ namespace redi
           ret = this;
         }
       }
+      return ret;
+    }
+
+  /**
+   * Sends the specified signal to the process group of the child process.
+   * A signal can be used to terminate a child process that would not exit
+   * otherwise, or to kill the process and its own children.
+   *
+   * If an error occurs the error code will be set to one of the possible
+   * errors for @c getpgid() or @c kill().  See your system's documentation
+   * for these errors. If the child is in the current process group then
+   * NULL will be returned and the error code set to EPERM.
+   *
+   * @param   signal  A signal to send to the child process.
+   * @return  @c this on success or @c NULL on failure.
+   */
+  template <typename C, typename T>
+    inline basic_pstreambuf<C,T>*
+    basic_pstreambuf<C,T>::killpg(int signal)
+    {
+      basic_pstreambuf<C,T>* ret = NULL;
+#ifdef _POSIX_JOB_CONTROL
+      if (is_open())
+      {
+        pid_t pgid = ::getpgid(ppid_);
+        if (pgid == -1)
+          error_ = errno;
+        else if (pgid == ::getpgrp())
+          error_ = EPERM;  // Don't commit suicide
+        else if (::killpg(pgid, signal))
+          error_ = errno;
+        else
+          ret = this;
+      }
+#endif
       return ret;
     }
 

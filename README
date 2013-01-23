@@ -41,10 +41,20 @@ To use PStreams with the alpha cxx compiler you must not use strict_ansi
 mode and define __USE_STD_IOSTREAM to use the standard IOStream classes.
 
 To run the test program compile and run test_pstreams.cc
-This can be done with "make test_pstreams" if you have GNU or BSD make
+This can be done with "make test_pstreams" if you have GNU or BSD make.
 The Makefile doesn't work with Solaris make, and probably other versions
 of make.
 
+
+Release notes for PStreams 0.8.0
+================================
+
+The child process will now switch to a new process group, with the
+process group ID the same as the PID.  The basic_pstreambuf::killpg()
+member function has been added to send a signal to the child's process
+group.
+
+Fixes for compatibility with Clang++ and _FORTIFY_SOURCE.
 
 Release notes for PStreams 0.7.0
 ================================
