@@ -59,7 +59,7 @@ mainpage.html: pstream.h Makefile
 	@perl -pi -e "s/^(<p>Version) [0-9\.]*(<\/p>)/\1 $(VERS)\2/" $@
 
 ChangeLog:
-	@if [ -f CVS/Root ] ; then cvs2cl --no-times -U usermap -F trunk ; fi
+	@[ -d .git ] && git log --no-merges | grep -v '^commit ' > $@
 
 dist: pstreams-$(VERS).tar.gz pstreams-docs-$(VERS).tar.gz
 
