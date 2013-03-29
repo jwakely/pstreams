@@ -747,7 +747,7 @@ namespace redi
 
   /**
    * @class basic_rpstream
-   * @brief template for Restricted PStreams.
+   * @brief Class template for Restricted PStreams.
    *
    * Writing to an rpstream opened with @c pmode @c pstdin writes to the
    * standard input of the command.
