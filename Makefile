@@ -59,7 +59,7 @@ mainpage.html: pstream.h Makefile
 	@perl -pi -e "s/^(<p>Version) [0-9\.]*(<\/p>)/\1 $(VERS)\2/" $@
 
 ChangeLog:
-	@[ -d .git ] && git log --no-merges | grep -v '^commit ' > $@
+	@if [ -d .git ]; then git log --no-merges | grep -v '^commit ' > $@ ; fi
 
 dist: pstreams-$(VERS).tar.gz pstreams-docs-$(VERS).tar.gz
 
