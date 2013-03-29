@@ -54,6 +54,10 @@ process group ID the same as the PID.  The basic_pstreambuf::killpg()
 member function has been added to send a signal to the child's process
 group.
 
+New constructors to simplify the common case where the string specifying
+the file to be executed is the same as the first element of the argv_type
+vector.
+
 Fixes for compatibility with Clang++ and _FORTIFY_SOURCE.
 
 Release notes for PStreams 0.7.0
