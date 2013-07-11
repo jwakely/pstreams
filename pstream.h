@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0080   // 0.8.0
+#define PSTREAMS_VERSION 0x0081   // 0.8.1
 
 /**
  *  @namespace redi
@@ -87,6 +87,9 @@ namespace redi
     static const pmode pstdin  = std::ios_base::out; ///< Write to stdin
     static const pmode pstdout = std::ios_base::in;  ///< Read from stdout
     static const pmode pstderr = std::ios_base::app; ///< Read from stderr
+
+    /// Create a new process group for the child process.
+    static const pmode newpg   = std::ios_base::trunc;
 
   protected:
     enum { bufsz = 32 };  ///< Size of pstreambuf buffers.
@@ -1313,8 +1316,8 @@ namespace redi
             }
 
 #ifdef _POSIX_JOB_CONTROL
-            // Change to a new process group
-            ::setpgid(0, 0);
+            if (mode&newpg)
+              ::setpgid(0, 0); // Change to a new process group
 #endif
 
             break;
@@ -1589,6 +1592,8 @@ namespace redi
         else
           ret = this;
       }
+#else
+      error_ = ENOTSUP;
 #endif
       return ret;
     }

@@ -834,6 +834,33 @@ int main()
         }
     }
 
+    clog << "# Testing process groups\n";
+    {
+        pstreams::argv_type args;
+        args.push_back("/bin/sleep");
+        args.push_back("10");
+        ipstream in(args);
+        void* p = in.rdbuf()->killpg(SIGKILL);
+        print_result(in, !p);
+        print_result(in, in.rdbuf()->error() == EPERM);
+        in.rdbuf()->kill(SIGTERM);
+        in.close();
+        int status = in.rdbuf()->status();
+        print_result(in, WIFSIGNALED(status) && WTERMSIG(status)==SIGTERM);
+    }
+    {
+        pstreams::argv_type args;
+        args.push_back("/bin/sleep");
+        args.push_back("10");
+        ipstream in(args, pstreams::newpg);
+        void* p = in.rdbuf()->killpg(SIGKILL);
+        print_result(in, p);
+        print_result(in, in.rdbuf()->error() == 0);
+        in.close();
+        int status = in.rdbuf()->status();
+        print_result(in, WIFSIGNALED(status) && WTERMSIG(status)==SIGKILL);
+    }
+
     clog << "# Testing wide chars\n";
     {
         ipstream dummy("true");
