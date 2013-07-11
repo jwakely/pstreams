@@ -384,6 +384,7 @@ namespace redi
        * @param mode     the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
+      explicit
       basic_ipstream(const std::string& command, pmode mode = pstdout)
       : istream_type(NULL), pbase_type(command, readable(mode))
       { }
@@ -415,9 +416,18 @@ namespace redi
        * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, const argv_type&, pmode)
        */
+      explicit
       basic_ipstream(const argv_type& argv, pmode mode = pstdout)
       : istream_type(NULL), pbase_type(argv.at(0), argv, mode|pstdout)
       { }
+
+#if __cplusplus >= 201103L
+      template<typename T>
+        explicit
+        basic_ipstream(std::initializer_list<T> args, pmode mode = pstdout)
+        : basic_ipstream(argv_type(args.begin(), args.end()), mode)
+        { }
+#endif
 
       /**
        * @brief Destructor.
@@ -526,6 +536,7 @@ namespace redi
        * @param mode     the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
+      explicit
       basic_opstream(const std::string& command, pmode mode = pstdin)
       : ostream_type(NULL), pbase_type(command, mode|pstdin)
       { }
@@ -557,9 +568,25 @@ namespace redi
        * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, const argv_type&, pmode)
        */
+      explicit
       basic_opstream(const argv_type& argv, pmode mode = pstdin)
       : ostream_type(NULL), pbase_type(argv.at(0), argv, mode|pstdin)
       { }
+
+#if __cplusplus >= 201103L
+      /**
+       * @brief Constructor that initialises the stream by starting a process.
+       *
+       * @param args  a list of argument strings passed to the new program.
+       * @param mode  the I/O mode to use when opening the pipe.
+       * @see   do_open(const std::string&, const argv_type&, pmode)
+       */
+      template<typename T>
+        explicit
+        basic_opstream(std::initializer_list<T> args, pmode mode = pstdin)
+        : basic_opstream(argv_type(args.begin(), args.end()), mode)
+        { }
+#endif
 
       /**
        * @brief Destructor
@@ -649,6 +676,7 @@ namespace redi
        * @param mode     the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
+      explicit
       basic_pstream(const std::string& command, pmode mode = pstdout|pstdin)
       : iostream_type(NULL), pbase_type(command, mode)
       { }
@@ -680,9 +708,25 @@ namespace redi
        * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, const argv_type&, pmode)
        */
+      explicit
       basic_pstream(const argv_type& argv, pmode mode = pstdout|pstdin)
       : iostream_type(NULL), pbase_type(argv.at(0), argv, mode)
       { }
+
+#if __cplusplus >= 201103L
+      /**
+       * @brief Constructor that initialises the stream by starting a process.
+       *
+       * @param l     a list of argument strings passed to the new program.
+       * @param mode  the I/O mode to use when opening the pipe.
+       * @see   do_open(const std::string&, const argv_type&, pmode)
+       */
+      template<typename T>
+        explicit
+        basic_pstream(std::initializer_list<T> l, pmode mode = pstdout|pstdin)
+        : basic_pstream(argv_type(l.begin(), l.end()), mode)
+        { }
+#endif
 
       /**
        * @brief Destructor
@@ -804,6 +848,7 @@ namespace redi
        * @param mode the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
+      explicit
       basic_rpstream(const std::string& command, pmode mode = pstdout|pstdin)
       : ostream_type(NULL) , istream_type(NULL) , pbase_type(command, mode)
       { }
@@ -835,10 +880,26 @@ namespace redi
        * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, const argv_type&, pmode)
        */
+      explicit
       basic_rpstream(const argv_type& argv, pmode mode = pstdout|pstdin)
       : ostream_type(NULL), istream_type(NULL),
         pbase_type(argv.at(0), argv, mode)
       { }
+
+#if __cplusplus >= 201103L
+      /**
+       * @brief Constructor that initialises the stream by starting a process.
+       *
+       * @param l     a list of argument strings passed to the new program.
+       * @param mode  the I/O mode to use when opening the pipe.
+       * @see   do_open(const std::string&, const argv_type&, pmode)
+       */
+      template<typename T>
+        explicit
+        basic_rpstream(std::initializer_list<T> l, pmode mode = pstdout|pstdin)
+        : basic_rpstream(argv_type(l.begin(), l.end()), mode)
+        { }
+#endif
 
       /// Destructor
       ~basic_rpstream() { }
