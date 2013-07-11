@@ -1,6 +1,6 @@
 /*
 PStreams - POSIX Process I/O for C++
-Copyright (C) 2002-2010 Jonathan Wakely
+Copyright (C) 2002-2013 Jonathan Wakely
 
 This file is part of PStreams.
 
@@ -802,13 +802,13 @@ int main()
             explicit pguard(ipstream& in, int signal=SIGKILL)
             : buf_(*in.rdbuf()), signal_(signal) { }
 
-          ~pguard() { if (signal_) buf_.kill(signal_); }
+            ~pguard() { if (signal_) buf_.kill(signal_); }
 
-          void release() { signal_ = 0; }
+            void release() { signal_ = 0; }
 
         private:
-          pstreambuf& buf_;
-          int signal_;
+            pstreambuf& buf_;
+            int signal_;
         };
 
         in.clear();

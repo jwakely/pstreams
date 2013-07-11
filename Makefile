@@ -1,4 +1,3 @@
-# $Id: Makefile,v 1.39 2010/10/14 21:35:22 redi Exp $
 # PStreams Makefile
 # Copyright (C) Jonathan Wakely
 #
