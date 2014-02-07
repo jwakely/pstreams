@@ -1,6 +1,6 @@
 /*
 PStreams - POSIX Process I/O for C++
-Copyright (C) 2002-2013 Jonathan Wakely
+Copyright (C) 2002-2014 Jonathan Wakely
 
 This file is part of PStreams.
 
@@ -240,7 +240,7 @@ int main()
 
     {
         // test unformatted input
-        // should print hostname on stdout, prefixed by "STDOUT: "
+        // should print date on stdout, prefixed by "STDOUT: "
         ipstream host("date");
         str.clear();
         char c;
@@ -248,6 +248,39 @@ int main()
             str += c;
         cout << "STDOUT:  " << str << flush;
         print_result(host, host.eof());
+    }
+
+    {
+        // test execve() style construction
+        // should print date on stdout, prefixed by "STDOUT: "
+
+        pstreams::argv_type argv;
+        argv.push_back("date");
+        ipstream is1(argv[0], argv);
+        ipstream is2(argv);
+        string s1, s2;
+        getline(is1, s1);
+        getline(is2, s2);
+        cout << "STDOUT:  " << s1 << endl;
+        print_result(is1, !s1.empty());
+        print_result(is2, s1 == s2);
+    }
+
+    {
+        // test execve() style construction
+        // should print error on stdout, prefixed by "STDERR: "
+
+        pstreams::argv_type argv;
+        argv.push_back("cat");
+        argv.push_back("/nosuchdir/nosuchfile");
+        ipstream is1(argv[0], argv, pstreams::pstderr);
+        ipstream is2(argv, pstreams::pstderr);
+        string s1, s2;
+        getline(is1, s1);
+        getline(is2, s2);
+        cout << "STDERR:  " << s1 << endl;
+        print_result(is1, !s1.empty());
+        print_result(is2, s1 == s2);
     }
 
     {

@@ -1,6 +1,6 @@
 /*
 PStreams - POSIX Process I/O for C++
-Copyright (C) 2001-2013 Jonathan Wakely
+Copyright (C) 2001-2014 Jonathan Wakely
 
 This file is part of PStreams.
 
@@ -355,6 +355,7 @@ namespace redi
 
       using pbase_type::buf_;  // declare name in this scope
 
+      // Ensure a basic_ipstream will read from at least one pipe
       pmode readable(pmode mode)
       {
         if (!(mode & (pstdout|pstderr)))
@@ -418,7 +419,7 @@ namespace redi
        */
       explicit
       basic_ipstream(const argv_type& argv, pmode mode = pstdout)
-      : istream_type(NULL), pbase_type(argv.at(0), argv, mode|pstdout)
+      : istream_type(NULL), pbase_type(argv.at(0), argv, readable(mode))
       { }
 
 #if __cplusplus >= 201103L
