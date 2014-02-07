@@ -46,6 +46,16 @@ The Makefile doesn't work with Solaris make, and probably other versions
 of make.
 
 
+Release notes for PStreams 0.8.1
+================================
+
+The change in version 0.8.0 that caused the child process to be put in
+a new process group could prevent the child from exiting when the parent
+process was killed by a signal. In version 0.8.1 it is still possible to
+create a new process group for the child, but that must be explicitly
+requested by setting the pstreams::newpg flag in the pmode argument
+used to create the new process.
+
 Release notes for PStreams 0.8.0
 ================================
 

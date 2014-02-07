@@ -1,7 +1,7 @@
 %define packagename pstreams
 
 Name:           pstreams-devel
-Version:        0.8.0
+Version:        0.8.1
 Release:        1%{?dist}
 Summary:        POSIX Process Control in C++
 
@@ -38,6 +38,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/pstreams
 
 %changelog
+* Fri Feb 07 2013 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-1
+- Update version.
+
 * Wed Jan 23 2013 Jonathan Wakely <pstreams@kayari.org> - 0.8.0-1
 - Update version.
 
