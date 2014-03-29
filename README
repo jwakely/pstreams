@@ -33,15 +33,8 @@ be some notes here that aren't covered in the API documentation, but see
 those docs for most questions about usage (or at least, how things _should_
 work).
 
-PStreams has mostly been tested with gcc so far, if you have problems (or
-better still - solutions) with PStreams and other compilers please let
-me know.
-
-To use PStreams with the alpha cxx compiler you must not use strict_ansi
-mode and define __USE_STD_IOSTREAM to use the standard IOStream classes.
-
 To run the test program compile and run test_pstreams.cc
-This can be done with "make test_pstreams" if you have GNU or BSD make.
+This can be done with "make check" if you have GNU or BSD make.
 The Makefile doesn't work with Solaris make, and probably other versions
 of make.
 
