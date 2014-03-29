@@ -115,8 +115,8 @@ namespace redi
       /// Default constructor.
       basic_pstreambuf();
 
-      /// Constructor that initialises the buffer with @a command.
-      basic_pstreambuf(const std::string& command, pmode mode);
+      /// Constructor that initialises the buffer with @a cmd.
+      basic_pstreambuf(const std::string& cmd, pmode mode);
 
       /// Constructor that initialises the buffer with @a file and @a argv.
       basic_pstreambuf( const std::string& file,
@@ -126,9 +126,9 @@ namespace redi
       /// Destructor.
       ~basic_pstreambuf();
 
-      /// Initialise the stream buffer with @a command.
+      /// Initialise the stream buffer with @a cmd.
       basic_pstreambuf*
-      open(const std::string& command, pmode mode);
+      open(const std::string& cmd, pmode mode);
 
       /// Initialise the stream buffer with @a file and @a argv.
       basic_pstreambuf*
@@ -288,7 +288,7 @@ namespace redi
       pstream_common();
 
       /// Constructor that initialises the stream by starting a process.
-      pstream_common(const std::string& command, pmode mode);
+      pstream_common(const std::string& cmd, pmode mode);
 
       /// Constructor that initialises the stream by starting a process.
       pstream_common(const std::string& file, const argv_type& argv, pmode mode);
@@ -299,7 +299,7 @@ namespace redi
 
       /// Start a process.
       void
-      do_open(const std::string& command, pmode mode);
+      do_open(const std::string& cmd, pmode mode);
 
       /// Start a process.
       void
@@ -381,13 +381,13 @@ namespace redi
        * Initialises the stream buffer by calling do_open() with the supplied
        * arguments.
        *
-       * @param command  a string containing a shell command.
-       * @param mode     the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       explicit
-      basic_ipstream(const std::string& command, pmode mode = pstdout)
-      : istream_type(NULL), pbase_type(command, readable(mode))
+      basic_ipstream(const std::string& cmd, pmode mode = pstdout)
+      : istream_type(NULL), pbase_type(cmd, readable(mode))
       { }
 
       /**
@@ -441,16 +441,16 @@ namespace redi
       /**
        * @brief Start a process.
        *
-       * Calls do_open( @a %command , @a mode|pstdout ).
+       * Calls do_open( @a cmd , @a mode|pstdout ).
        *
-       * @param command  a string containing a shell command.
-       * @param mode     the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       void
-      open(const std::string& command, pmode mode = pstdout)
+      open(const std::string& cmd, pmode mode = pstdout)
       {
-        this->do_open(command, readable(mode));
+        this->do_open(cmd, readable(mode));
       }
 
       /**
@@ -533,13 +533,13 @@ namespace redi
        * Initialises the stream buffer by calling do_open() with the supplied
        * arguments.
        *
-       * @param command  a string containing a shell command.
-       * @param mode     the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       explicit
-      basic_opstream(const std::string& command, pmode mode = pstdin)
-      : ostream_type(NULL), pbase_type(command, mode|pstdin)
+      basic_opstream(const std::string& cmd, pmode mode = pstdin)
+      : ostream_type(NULL), pbase_type(cmd, mode|pstdin)
       { }
 
       /**
@@ -599,16 +599,16 @@ namespace redi
       /**
        * @brief Start a process.
        *
-       * Calls do_open( @a %command , @a mode|pstdin ).
+       * Calls do_open( @a cmd , @a mode|pstdin ).
        *
-       * @param command  a string containing a shell command.
-       * @param mode     the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       void
-      open(const std::string& command, pmode mode = pstdin)
+      open(const std::string& cmd, pmode mode = pstdin)
       {
-        this->do_open(command, mode|pstdin);
+        this->do_open(cmd, mode|pstdin);
       }
 
       /**
@@ -673,13 +673,13 @@ namespace redi
        * Initialises the stream buffer by calling do_open() with the supplied
        * arguments.
        *
-       * @param command  a string containing a shell command.
-       * @param mode     the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       explicit
-      basic_pstream(const std::string& command, pmode mode = pstdout|pstdin)
-      : iostream_type(NULL), pbase_type(command, mode)
+      basic_pstream(const std::string& cmd, pmode mode = pstdout|pstdin)
+      : iostream_type(NULL), pbase_type(cmd, mode)
       { }
 
       /**
@@ -739,16 +739,16 @@ namespace redi
       /**
        * @brief Start a process.
        *
-       * Calls do_open( @a %command , @a mode ).
+       * Calls do_open( @a cnd , @a mode ).
        *
-       * @param command  a string containing a shell command.
-       * @param mode     the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       void
-      open(const std::string& command, pmode mode = pstdout|pstdin)
+      open(const std::string& cmd, pmode mode = pstdout|pstdin)
       {
-        this->do_open(command, mode);
+        this->do_open(cmd, mode);
       }
 
       /**
@@ -845,13 +845,13 @@ namespace redi
        * Initialises the stream buffer by calling do_open() with the supplied
        * arguments.
        *
-       * @param command a string containing a shell command.
-       * @param mode the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       explicit
-      basic_rpstream(const std::string& command, pmode mode = pstdout|pstdin)
-      : ostream_type(NULL) , istream_type(NULL) , pbase_type(command, mode)
+      basic_rpstream(const std::string& cmd, pmode mode = pstdout|pstdin)
+      : ostream_type(NULL) , istream_type(NULL) , pbase_type(cmd, mode)
       { }
 
       /**
@@ -908,16 +908,16 @@ namespace redi
       /**
        * @brief  Start a process.
        *
-       * Calls do_open( @a %command , @a mode ).
+       * Calls do_open( @a cmd , @a mode ).
        *
-       * @param command a string containing a shell command.
-       * @param mode the I/O mode to use when opening the pipe.
+       * @param cmd   a string containing a shell command.
+       * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, pmode)
        */
       void
-      open(const std::string& command, pmode mode = pstdout|pstdin)
+      open(const std::string& cmd, pmode mode = pstdout|pstdin)
       {
-        this->do_open(command, mode);
+        this->do_open(cmd, mode);
       }
 
       /**
@@ -992,8 +992,8 @@ namespace redi
     inline std::basic_ostream<C,T>&
     peof(std::basic_ostream<C,T>& s)
     {
-      typedef basic_pstreambuf<C,T> pstreambuf;
-      if (pstreambuf* p = dynamic_cast<pstreambuf*>(s.rdbuf()))
+      typedef basic_pstreambuf<C,T> pstreambuf_type;
+      if (pstreambuf_type* p = dynamic_cast<pstreambuf_type*>(s.rdbuf()))
         p->peof();
       return s;
     }
@@ -1027,13 +1027,13 @@ namespace redi
    * Initialises the stream buffer by calling open() with the supplied
    * arguments.
    *
-   * @param command a string containing a shell command.
-   * @param mode    the I/O mode to use when opening the pipe.
+   * @param cmd   a string containing a shell command.
+   * @param mode  the I/O mode to use when opening the pipe.
    * @see   open()
    */
   template <typename C, typename T>
     inline
-    basic_pstreambuf<C,T>::basic_pstreambuf(const std::string& command, pmode mode)
+    basic_pstreambuf<C,T>::basic_pstreambuf(const std::string& cmd, pmode mode)
     : ppid_(-1)   // initialise to -1 to indicate no process run yet.
     , wpipe_(-1)
     , wbuffer_(NULL)
@@ -1042,7 +1042,7 @@ namespace redi
     , error_(0)
     {
       init_rbuffers();
-      open(command, mode);
+      open(cmd, mode);
     }
 
   /**
@@ -1562,15 +1562,15 @@ namespace redi
     int
     basic_pstreambuf<C,T>::wait(bool nohang)
     {
-      int exited = -1;
+      int child_exited = -1;
       if (is_open())
       {
-        int status;
-        switch(::waitpid(ppid_, &status, nohang ? WNOHANG : 0))
+        int exit_status;
+        switch(::waitpid(ppid_, &exit_status, nohang ? WNOHANG : 0))
         {
           case 0 :
             // nohang was true and process has not exited
-            exited = 0;
+            child_exited = 0;
             break;
           case -1 :
             error_ = errno;
@@ -1578,8 +1578,8 @@ namespace redi
           default :
             // process has exited
             ppid_ = 0;
-            status_ = status;
-            exited = 1;
+            status_ = exit_status;
+            child_exited = 1;
             // Close wpipe, would get SIGPIPE if we used it.
             destroy_buffers(pstdin);
             close_fd(wpipe_);
@@ -1588,7 +1588,7 @@ namespace redi
             break;
         }
       }
-      return exited;
+      return child_exited;
     }
 
   /**
@@ -2045,19 +2045,19 @@ namespace redi
    * Initialises the stream buffer by calling
    * do_open( @a command , @a mode )
    *
-   * @param command a string containing a shell command.
-   * @param mode    the I/O mode to use when opening the pipe.
+   * @param cmd   a string containing a shell command.
+   * @param mode  the I/O mode to use when opening the pipe.
    * @see   do_open(const std::string&, pmode)
    */
   template <typename C, typename T>
     inline
-    pstream_common<C,T>::pstream_common(const std::string& command, pmode mode)
+    pstream_common<C,T>::pstream_common(const std::string& cmd, pmode mode)
     : std::basic_ios<C,T>(NULL)
-    , command_(command)
+    , command_(cmd)
     , buf_()
     {
       this->std::basic_ios<C,T>::rdbuf(&buf_);
-      do_open(command, mode);
+      do_open(cmd, mode);
     }
 
   /**
@@ -2101,15 +2101,15 @@ namespace redi
    * Calls rdbuf()->open( @a command , @a mode )
    * and sets @c failbit on error.
    *
-   * @param command a string containing a shell command.
-   * @param mode    the I/O mode to use when opening the pipe.
+   * @param cmd   a string containing a shell command.
+   * @param mode  the I/O mode to use when opening the pipe.
    * @see   basic_pstreambuf::open(const std::string&, pmode)
    */
   template <typename C, typename T>
     inline void
-    pstream_common<C,T>::do_open(const std::string& command, pmode mode)
+    pstream_common<C,T>::do_open(const std::string& cmd, pmode mode)
     {
-      if (!buf_.open((command_=command), mode))
+      if (!buf_.open((command_=cmd), mode))
         this->setstate(std::ios_base::failbit);
     }
 
