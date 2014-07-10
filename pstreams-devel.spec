@@ -2,7 +2,7 @@
 
 Name:           pstreams-devel
 Version:        0.8.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        POSIX Process Control in C++
 
 Group:          Development/Libraries
@@ -38,7 +38,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/pstreams
 
 %changelog
-* Fri Feb 07 2013 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-1
+* Thu Jul 10 2014 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-2
+- Fix rpmlint warning.
+
+* Fri Feb 07 2014 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-1
 - Update version.
 
 * Wed Jan 23 2013 Jonathan Wakely <pstreams@kayari.org> - 0.8.0-1

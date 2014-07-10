@@ -62,6 +62,9 @@ ChangeLog:
 
 dist: pstreams-$(VERS).tar.gz pstreams-docs-$(VERS).tar.gz
 
+srpm: pstreams-$(VERS).tar.gz
+	@rpmbuild -ts $<
+
 pstreams-$(VERS).tar.gz: pstream.h $(GENERATED_FILES)
 	@ln -s . pstreams-$(VERS)
 	@tar -czvf $@ `cat MANIFEST`
@@ -78,6 +81,7 @@ TODO : pstream.h mainpage.html test_pstreams.cc
 clean:
 	@rm -f  test_minimum test_pstreams
 	@rm -rf doc TODO
+	@rm -f  *.tar.gz
 
 install:
 	@install -d $(DESTDIR)$(includedir)/pstreams
@@ -86,5 +90,5 @@ install:
 pstreams.wout:
 	@echo "Wide Load" | iconv -f ascii -t UTF-32 > $@
 
-.PHONY: TODO check test ChangeLog run_tests
+.PHONY: TODO check test ChangeLog run_tests dist srpm
 
