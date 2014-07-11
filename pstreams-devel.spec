@@ -15,7 +15,7 @@ BuildRequires:  doxygen
 BuildArch:      noarch
 
 %description
-PStreams class is like a C++ wrapper for the POSIX.2 functions
+PStreams is like a C++ wrapper for the POSIX.2 functions
 popen(3) and pclose(3), using C++ iostreams instead of C's stdio
 library.
 
@@ -39,7 +39,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Thu Jul 10 2014 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-2
-- Fix rpmlint warning.
+- Fix rpmlint warning and package description.
 
 * Fri Feb 07 2014 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-1
 - Update version.
