@@ -1897,7 +1897,8 @@ namespace redi
 
       char_type* const rbuf = rbuffer();
 
-      traits_type::move(rbuf + pbsz - npb, this->gptr() - npb, npb);
+      if (npb)
+        traits_type::move(rbuf + pbsz - npb, this->gptr() - npb, npb);
 
       std::streamsize rc = -1;
 
