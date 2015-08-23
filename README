@@ -169,7 +169,7 @@ fails. This will prevent static destructors being run in the child process
 
 I've also changed the macro that guards the pstream.h header from being
 included multiple times, by appending "_SEEN" to the names. If this
-causes any problems make sure you dont have any old versions of pstream.h
+causes any problems make sure you don't have any old versions of pstream.h
 on your system.
 
 This release has been long overdue and it shouldn't be as long before the
