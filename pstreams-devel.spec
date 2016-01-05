@@ -1,26 +1,23 @@
-%define packagename pstreams
-
 Name:           pstreams-devel
 Version:        0.8.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        POSIX Process Control in C++
 
 Group:          Development/Libraries
 License:        LGPLv3+
-URL:            http://%{packagename}.sourceforge.net/
-Source0:        http://downloads.sourceforge.net/%{packagename}/%{packagename}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+URL:            http://pstreams.sourceforge.net/
+Source0:        http://downloads.sourceforge.net/pstreams/pstreams-%{version}.tar.gz
 
 BuildRequires:  doxygen
 BuildArch:      noarch
 
 %description
-PStreams is like a C++ wrapper for the POSIX.2 functions
+PStreams classes are like C++ wrappers for the POSIX.2 functions
 popen(3) and pclose(3), using C++ iostreams instead of C's stdio
 library.
 
 %prep
-%setup -q -n %{packagename}-%{version}
+%setup -q -n pstreams-%{version}
 
 %build
 make %{?_smp_mflags}
@@ -38,6 +35,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/pstreams
 
 %changelog
+* Tue Jan 05 2016 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-3
+- Replace packagename macro and remove BuildRoot tag.
+
 * Thu Jul 10 2014 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-2
 - Fix rpmlint warning and package description.
 
