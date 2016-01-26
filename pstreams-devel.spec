@@ -1,6 +1,6 @@
 Name:           pstreams-devel
 Version:        0.8.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        POSIX Process Control in C++
 
 Group:          Development/Libraries
@@ -30,11 +30,13 @@ make install  DESTDIR=$RPM_BUILD_ROOT includedir=%{_includedir}
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-,root,root,-)
 %doc doc/html COPYING.LIB README AUTHORS ChangeLog
 %{_includedir}/pstreams
 
 %changelog
+* Tue Jan 26 2016 Jonathan Wakely <jwakely@redhat.com> 0.8.1-4
+- Remove redundant %%defattr.
+
 * Tue Jan 05 2016 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-3
 - Replace packagename macro and remove BuildRoot tag.
 
