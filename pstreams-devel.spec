@@ -34,7 +34,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/pstreams
 
 %changelog
-* Tue Jan 26 2016 Jonathan Wakely <jwakely@redhat.com> 0.8.1-4
+* Tue Jan 26 2016 Jonathan Wakely <jwakely@redhat.com> - 0.8.1-4
 - Remove redundant %%defattr.
 
 * Tue Jan 05 2016 Jonathan Wakely <pstreams@kayari.org> - 0.8.1-3
