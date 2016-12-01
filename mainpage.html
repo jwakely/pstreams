@@ -36,12 +36,11 @@ kill or otherwise control it.</li>
 
 <p>&nbsp;</p>
 <h2><a name='status'>Current status</a></h2>
-<p>Version 0.8.1</p>
-<p>Working <code>ipstream</code>, <code>opstream</code> and
+<p>Version 1.0.0</p>
+<p>Defines <code>ipstream</code>, <code>opstream</code> and
 <code>pstream</code> classes for
 ISO C++-compliant compilers. The classes are fully functional and the
-public interfaces should be stable for all except the <code>pstreambuf</code>
-class, which may be extended to add new features.</p>
+interfaces are stable.
 <p>The stream buffer class, <code>pstreambuf</code>, doesn't use
 <code>popen()</code>. It uses up to three
 pipes shared with the associated process, giving access to any combination

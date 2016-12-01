@@ -38,6 +38,12 @@ This can be done with "make check" if you have GNU or BSD make.
 The Makefile doesn't work with Solaris make, and probably other versions
 of make.
 
+Release notes for PStreams 1.0.0
+================================
+
+The only significant change since the 0.8.1 release is a workaround for a
+bug in older versions of the GCC C++ standard library which allowed null
+pointers to be passed to the memmove() function.
 
 Release notes for PStreams 0.8.1
 ================================

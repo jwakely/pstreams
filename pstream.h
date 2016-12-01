@@ -1,6 +1,6 @@
 /*
 PStreams - POSIX Process I/O for C++
-Copyright (C) 2001-2014 Jonathan Wakely
+Copyright (C) 2001-2016 Jonathan Wakely
 
 This file is part of PStreams.
 
@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0081   // 0.8.1
+#define PSTREAMS_VERSION 0x0100   // 1.0.0
 
 /**
  *  @namespace redi

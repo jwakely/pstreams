@@ -1,6 +1,6 @@
 Name:           pstreams-devel
-Version:        0.8.1
-Release:        4%{?dist}
+Version:        1.0.0
+Release:        1%{?dist}
 Summary:        POSIX Process Control in C++
 
 Group:          Development/Libraries
@@ -34,6 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/pstreams
 
 %changelog
+* Thu Dec 01 2016 Jonathan Wakely <pstreams@kayari.org> - 1.0.0-1
+- Update version.
+
 * Tue Jan 26 2016 Jonathan Wakely <jwakely@redhat.com> - 0.8.1-4
 - Remove redundant %%defattr.
 
