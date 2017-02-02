@@ -1,10 +1,10 @@
 Name:           pstreams-devel
-Version:        1.0.0
+Version:        1.0.1
 Release:        1%{?dist}
 Summary:        POSIX Process Control in C++
 
 Group:          Development/Libraries
-License:        LGPLv3+
+License:        Boost
 URL:            http://pstreams.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/pstreams/pstreams-%{version}.tar.gz
 
@@ -30,10 +30,13 @@ make install  DESTDIR=$RPM_BUILD_ROOT includedir=%{_includedir}
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%doc doc/html COPYING.LIB README AUTHORS ChangeLog
+%doc doc/html LICENSE_1_0.txt README AUTHORS ChangeLog
 %{_includedir}/pstreams
 
 %changelog
+* Thu Feb 02 2017 Jonathan Wakely <jwakely@redhat.com> - 1.0.1-1
+- Update version and %%License.
+
 * Thu Dec 01 2016 Jonathan Wakely <pstreams@kayari.org> - 1.0.0-1
 - Update version.
 

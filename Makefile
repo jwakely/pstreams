@@ -1,27 +1,17 @@
 # PStreams Makefile
-# Copyright (C) Jonathan Wakely
+
+#        Copyright (C) 2001 - 2017 Jonathan Wakely
+# Distributed under the Boost Software License, Version 1.0.
+#    (See accompanying file LICENSE_1_0.txt or copy at
+#          http://www.boost.org/LICENSE_1_0.txt)
 #
-# This file is part of PStreams.
-# 
-# PStreams is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
-# 
-# PStreams is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-# 
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # TODO configure script (allow doxygenating of EVISCERATE functions)
 
 OPTIM= -O1 -g3
 EXTRA_CXXFLAGS=
 
-CFLAGS=-pedantic -Werror -Wall -Wextra -Wpointer-arith -Wcast-qual -Wcast-align -Wredundant-decls -Wshadow $(OPTIM)
+CFLAGS=-pedantic -Wall -Wextra -Wpointer-arith -Wcast-qual -Wcast-align -Wredundant-decls -Wshadow $(OPTIM)
 CXXFLAGS=$(CFLAGS) -std=c++98 -Woverloaded-virtual
 
 prefix = /usr/local
@@ -31,14 +21,18 @@ INSTALL_DATA = $(INSTALL) -p -v -m 0644
 
 SOURCES = pstream.h
 GENERATED_FILES = ChangeLog MANIFEST
-EXTRA_FILES = AUTHORS COPYING.LIB Doxyfile INSTALL Makefile README \
+EXTRA_FILES = AUTHORS LICENSE_1_0.txt Doxyfile INSTALL Makefile README \
 	    mainpage.html test_pstreams.cc test_minimum.cc pstreams-devel.spec
 
 DIST_FILES = $(SOURCES) $(GENERATED_FILES) $(EXTRA_FILES)
 
 VERS := $(shell awk -F' ' '/^\#define *PSTREAMS_VERSION/{ print $$NF }' pstream.h)
 
-all: docs $(GENERATED_FILES)
+all: check-werror
+
+check-werror:
+	@rm -f test_pstreams test_minimum
+	@$(MAKE) check EXTRA_CXXFLAGS=-Werror
 
 check: test_pstreams test_minimum | pstreams.wout
 	@for test in $^ ; do echo $$test ; ./$$test >/dev/null 2>&1 || echo "$$test EXITED WITH STATUS $$?" ; done
@@ -65,23 +59,25 @@ dist: pstreams-$(VERS).tar.gz pstreams-docs-$(VERS).tar.gz
 srpm: pstreams-$(VERS).tar.gz
 	@rpmbuild -ts $<
 
-pstreams-$(VERS).tar.gz: pstream.h $(GENERATED_FILES)
-	@ln -s . pstreams-$(VERS)
-	@tar -czvf $@ `cat MANIFEST`
-	@rm pstreams-$(VERS)
+pstreams-$(VERS):
+	@ln -s . $@
 
-pstreams-docs-$(VERS).tar.gz: docs
-	@ln -s doc/html pstreams-docs-$(VERS)
+pstreams-$(VERS).tar.gz: pstream.h $(GENERATED_FILES) pstreams-$(VERS)
+	@tar -czvf $@ `cat MANIFEST`
+
+pstreams-docs-$(VERS):
+	@ln -s doc/html $@
+
+pstreams-docs-$(VERS).tar.gz: docs pstreams-docs-$(VERS)
 	@tar -czvhf $@ pstreams-docs-$(VERS)
-	@rm pstreams-docs-$(VERS)
 
 TODO : pstream.h mainpage.html test_pstreams.cc
 	@grep -nH TODO $^ | sed -e 's@ *// *@@' > $@
 
 clean:
 	@rm -f  test_minimum test_pstreams
-	@rm -rf doc TODO
-	@rm -f  *.tar.gz
+	@rm -rf doc TODO $(GENERATED_FILES)
+	@rm -f  *.tar.gz pstreams-$(VERS) pstreams-docs-$(VERS)
 
 install:
 	@install -d $(DESTDIR)$(includedir)/pstreams
@@ -90,5 +86,6 @@ install:
 pstreams.wout:
 	@echo "Wide Load" | iconv -f ascii -t UTF-32 > $@
 
-.PHONY: TODO check test ChangeLog run_tests dist srpm
+.PHONY: TODO check test run_tests dist srpm
+.INTERMEDIATE: $(GENERATED_FILES) pstreams-$(VERS) pstreams-docs-$(VERS)
 

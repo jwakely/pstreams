@@ -5,7 +5,7 @@
 
 <h3>A C++ iostream interface to POSIX process I/O.</h3>
 
-<p>The library is a work in progress. It is intended to provide a C++
+<p>This library provides a C++
 re-implementation of the POSIX.2 functions <kbd class="man_page">popen</kbd>(3)
 and <kbd class="man_page">pclose</kbd>(3), using iostreams to read from and
 write to the opened process.</p>
@@ -29,14 +29,17 @@ specified by a filename and a vector of arguments, similar to the
 <li>Signals. The child process can be sent any signal, which can be used to
 kill or otherwise control it.</li>
 </ul>
-<p>The library is available under the <a href='http://www.gnu.org/'>GNU</a>
-<a href='http://www.gnu.org/licenses/lgpl.txt'>Lesser General Public License</a>
+<p>
+The library is free software, available under the permissive
+<a href='http://www.boost.org/LICENSE_1_0.txt'>Boost Software License - Version 1.0</a>
+(prior to version 1.0.1 it used the GNU LGPL).
+</p>
 <p>To help improve PStreams see the
 <a href="http://sf.net/projects/pstreams/">SourceForge project page</a>.</p>
 
 <p>&nbsp;</p>
 <h2><a name='status'>Current status</a></h2>
-<p>Version 1.0.0</p>
+<p>Version 1.0.1</p>
 <p>Defines <code>ipstream</code>, <code>opstream</code> and
 <code>pstream</code> classes for
 ISO C++-compliant compilers. The classes are fully functional and the

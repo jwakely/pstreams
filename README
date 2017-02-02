@@ -38,6 +38,12 @@ This can be done with "make check" if you have GNU or BSD make.
 The Makefile doesn't work with Solaris make, and probably other versions
 of make.
 
+Release notes for PStreams 1.0.1
+================================
+
+The library is now licensed under the Boost Software License instead of
+the GNU LGPL. There are no other changes in this release.
+
 Release notes for PStreams 1.0.0
 ================================
 

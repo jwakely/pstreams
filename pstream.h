@@ -1,22 +1,10 @@
-/*
-PStreams - POSIX Process I/O for C++
-Copyright (C) 2001-2016 Jonathan Wakely
+// PStreams - POSIX Process I/O for C++
 
-This file is part of PStreams.
-
-PStreams is free software; you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
-
-PStreams is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+//        Copyright (C) 2001 - 2017 Jonathan Wakely
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+//
 
 /**
  * @file pstream.h
@@ -55,7 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0100   // 1.0.0
+#define PSTREAMS_VERSION 0x0101   // 1.0.1
 
 /**
  *  @namespace redi
