@@ -18,7 +18,7 @@ Inter-Process Communication. PStreams is a tool. Not the most efficient or
 flexible method of IPC, but fairly simple and IOStream-based, with all the
 advantages that provides. I hope you find it useful.
 
-PStreams is free software, see the file COPYING.LIB for copying permission.
+PStreams is free software, see the file LICENSE_1_0.txt for copying permission.
 The latest version can be found at http://pstreams.sourceforge.net/ and
 frequently asked questions at http://pstreams.sourceforge.net/faq.html
 The author can be contacted at pstreams@kayari.org
