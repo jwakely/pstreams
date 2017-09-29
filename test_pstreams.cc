@@ -743,8 +743,83 @@ int main()
         print_result(ps, p!=NULL);
 #endif
     }
-
 #endif
+
+    clog << "# Testing file descriptor access\n";
+
+    {
+        opstream os("tr '[:lower:]' '[:upper:]' | sed 's/^/STDIN: /'");
+        int in, out, err;
+        size_t res = os.fds(in, out, err);
+        print_result(os, res & pstreambuf::pstdin);
+        print_result(os, in!=-1);
+        const char *msg = "flax\n";
+        ssize_t i = write(in, msg, strlen(msg));
+        print_result(os, i==static_cast<ssize_t>(strlen(msg)));
+    }
+
+    {
+        std::string cmd = "ls /etc/hosts /no/such/file";
+        ipstream is(cmd, pstreambuf::pstdout|pstreambuf::pstderr);
+        int in, out, err;
+        size_t res = is.fds(in, out, err);
+        print_result(is, res & pstreambuf::pstdout);
+        print_result(is, res & pstreambuf::pstderr);
+        print_result(is, out!=-1);
+        print_result(is, err!=-1);
+
+        const size_t len = 256;
+        char buf[len];
+        ssize_t i = read(out, buf, len);
+        ssize_t count = 0;
+        if (i > 0) {
+          count = i;
+        }
+        cout << "STDOUT: " << std::string(buf, count);
+        print_result(is, i>=0);
+
+        i = read(err, buf, len);
+        count = 0;
+        if ( i > 0) {
+          count = i;
+        }
+        cout << "STDERR: " << std::string(buf, count);
+        print_result(is, i>=0);
+    }
+
+    {
+        std::string cmd = "grep 127 -- - /etc/hosts /no/such/file";
+        pstream ps(cmd, all3streams);
+        int in, out, err;
+        size_t res = ps.fds(in, out, err);
+        print_result(ps, res & pstreambuf::pstdin);
+        print_result(ps, res & pstreambuf::pstdout);
+        print_result(ps, res & pstreambuf::pstderr);
+        print_result(ps, in!=-1);
+        print_result(ps, out!=-1);
+        print_result(ps, err!=-1);
+
+        // ps << "12345\n1112777\n0000" << EOF;
+#if 0
+        const size_t len = 256;
+        char buf[len];
+        ssize_t i = read(out, buf, len);
+        ssize_t count = 0;
+        if (i > 0) {
+          count = i;
+        }
+        cout << "STDOUT: " << std::string(buf, count);
+        print_result(is, i>=0);
+
+        i = read(err, buf, len);
+        count = 0;
+        if ( i > 0) {
+          count = i;
+        }
+        cout << "STDERR: " << std::string(buf, count);
+        print_result(is, i>=0);
+#endif
+    }
 
     clog << "# Testing resources freed correctly\n";
 
