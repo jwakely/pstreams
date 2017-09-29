@@ -705,10 +705,12 @@ int main()
 
         const size_t len = 256;
         char buf[len];
+        buf[0] = '\0';
         char* p = fgets(buf, len, out);
         cout << "STDOUT: " << buf;
         print_result(is, p!=NULL);
 
+        buf[0] = '\0';
         p = fgets(buf, len, err);
         cout << "STDERR: " << buf;
         print_result(is, p!=NULL);
@@ -730,10 +732,12 @@ int main()
 #if 0
         size_t len = 256;
         char buf[len];
+        buf[0] = '\0';
         char* p = fgets(buf, len, out);
         cout << "STDOUT: " << buf;
         print_result(ps, p!=NULL);
 
+        buf[0] = '\0';
         p = fgets(buf, len, err);
         cout << "STDERR: " << buf;
         print_result(ps, p!=NULL);
