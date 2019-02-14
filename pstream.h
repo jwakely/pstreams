@@ -294,8 +294,9 @@ namespace redi
       do_open(const std::string& file, const argv_type& argv, pmode mode);
 
     public:
-      /// Close the pipe.
-      void
+      /// Close the pipe, returning the program's exit status, as
+      /// pclose(3) does.
+      int
       close();
 
       /// Report whether the stream's buffer has been initialised.
@@ -2121,13 +2122,15 @@ namespace redi
         this->setstate(std::ios_base::failbit);
     }
 
-  /** Calls rdbuf->close() and sets @c failbit on error. */
+  /** Calls rdbuf->close() and sets @c failbit on error.  Returns
+   *  process's exit status, as pclose(3) does. */
   template <typename C, typename T>
-    inline void
+    inline int
     pstream_common<C,T>::close()
     {
       if (!buf_.close())
         this->setstate(std::ios_base::failbit);
+      return buf_.status();
     }
 
   /**

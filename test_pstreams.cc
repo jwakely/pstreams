@@ -477,7 +477,7 @@ int main()
         // does not show failure: print_result(ofail, !ofail.is_open());
         pstreambuf* buf = ofail.rdbuf();
         print_result(ofail, buf->exited());
-        int status = buf->status();
+        int status = ofail.close();
         print_result( ofail,
                 WIFEXITED(status) && WEXITSTATUS(status) == sh_cmd_not_found );
     }
@@ -849,11 +849,10 @@ int main()
             pguard pg(in, SIGTERM);  // should kill child
             throw 0;
         } catch(...) {
-            in.close();  // should return immediately if child killed
+            int status = in.close();  // should return immediately if child killed
             print_result(in, alarm(0) > 0 && sig_counter == 0);
             sigaction(SIGALRM, &oldact, 0);
 
-            int status = in.rdbuf()->status();
             print_result(in, WIFSIGNALED(status) && WTERMSIG(status)==SIGTERM);
         }
     }
@@ -868,8 +867,7 @@ int main()
         print_result(in, !p);
         print_result(in, in.rdbuf()->error() == EPERM);
         in.rdbuf()->kill(SIGTERM);
-        in.close();
-        int status = in.rdbuf()->status();
+        int status = in.close();
         print_result(in, WIFSIGNALED(status) && WTERMSIG(status)==SIGTERM);
     }
     {
@@ -880,8 +878,7 @@ int main()
         void* p = in.rdbuf()->killpg(SIGKILL);
         print_result(in, p);
         print_result(in, in.rdbuf()->error() == 0);
-        in.close();
-        int status = in.rdbuf()->status();
+        int status = in.close();
         print_result(in, WIFSIGNALED(status) && WTERMSIG(status)==SIGKILL);
     }
 
