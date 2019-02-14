@@ -20,6 +20,7 @@ INSTALL = install
 INSTALL_DATA = $(INSTALL) -p -v -m 0644
 
 SOURCES = pstream.h
+TESTS = test_pstreams test_minimum
 GENERATED_FILES = ChangeLog MANIFEST
 EXTRA_FILES = AUTHORS LICENSE_1_0.txt Doxyfile INSTALL Makefile README \
 	    mainpage.html test_pstreams.cc test_minimum.cc pstreams-devel.spec
@@ -28,16 +29,13 @@ DIST_FILES = $(SOURCES) $(GENERATED_FILES) $(EXTRA_FILES)
 
 VERS := $(shell awk -F' ' '/^\#define *PSTREAMS_VERSION/{ print $$NF }' pstream.h)
 
-all: check-werror
+all: $(TESTS) | pstreams.wout
+
+check run_tests test: all
+	@for test in $(TESTS) ; do echo $$test ; ./$$test >/dev/null 2>&1 || echo "$$test EXITED WITH STATUS $$?" ; done
 
 check-werror:
-	@rm -f test_pstreams test_minimum
-	@$(MAKE) check EXTRA_CXXFLAGS=-Werror
-
-check: test_pstreams test_minimum | pstreams.wout
-	@for test in $^ ; do echo $$test ; ./$$test >/dev/null 2>&1 || echo "$$test EXITED WITH STATUS $$?" ; done
-
-test run_tests: check
+	@$(MAKE) EXTRA_CXXFLAGS=-Werror all check
 
 test_%: test_%.cc pstream.h
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(LDFLAGS) -o $@ $<
