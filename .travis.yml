@@ -10,8 +10,7 @@ install:
   set +e
 
 env:
-  - PATH=/opt/gcc-latest/bin:$PATH
-  - LD_RUN_PATH=/opt/gcc-latest/lib64
+  - PATH=/opt/gcc-latest/bin:$PATH LD_RUN_PATH=/opt/gcc-latest/lib64
 
 script:
 - |
