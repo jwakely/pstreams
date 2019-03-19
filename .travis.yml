@@ -7,11 +7,11 @@ install:
   set -e
   wget http://kayari.org/gcc-latest/gcc-latest.deb
   sudo dpkg -i gcc-latest.deb
-  sudo ln -s /opt/gcc-latest/bin/gcc /usr/bin/gcc-latest
-  sudo ln -s /opt/gcc-latest/bin/g++ /usr/bin/g++-latest
-  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-latest 90 --slave /usr/bin/g++ g++ /usr/bin/g++-latest
-  sudo ldconfig /opt/gcc-latest/lib64
   set +e
+
+env:
+  - PATH=/opt/gcc-latest/bin:$PATH
+  - LD_RUN_PATH=/opt/gcc-latest/lib64
 
 script:
 - |
