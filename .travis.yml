@@ -4,15 +4,15 @@ dist: xenial
 
 install:
 - |
-  set -e
   wget http://kayari.org/gcc-latest/gcc-latest.deb
   sudo dpkg -i gcc-latest.deb
-  set +e
 
 env:
-  - PATH=/opt/gcc-latest/bin:$PATH LD_RUN_PATH=/opt/gcc-latest/lib64
+  - CC=/opt/gcc-latest/bin/gcc CXX=/opt/gcc-latest/bin/g++ LD_RUN_PATH=/opt/gcc-latest/lib64
 
 script:
 - |
   g++ -v
+  which gcc
+  echo $LD_RUN_PATH
   make check-werror
