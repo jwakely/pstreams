@@ -3,11 +3,10 @@ dist: xenial
 
 install:
 - |
-  wget http://kayari.org/gcc-latest/gcc-latest.deb
-  sudo dpkg -i gcc-latest.deb
-
-env:
-  - CC=/opt/gcc-latest/bin/gcc CXX=/opt/gcc-latest/bin/g++ LD_RUN_PATH=/opt/gcc-latest/lib64
+  wget http://kayari.org/gcc-latest/gcc-latest.deb \
+  && sudo dpkg -i gcc-latest.deb
+  export PATH=/opt/gcc-latest/bin:$PATH
+  export LD_RUN_PATH=/opt/gcc-latest/lib64
 
 script:
 - |
