@@ -157,6 +157,9 @@ int main()
 
     std::string str;
 
+    //std::string badcmd = "hgfhdgf";
+    const std::string badcmd = "hgfhdgf 2>/dev/null";
+
     clog << "# Testing basic I/O\n";
 
     {
@@ -436,9 +439,6 @@ int main()
     }
 
     clog << "# Testing behaviour with bad commands" << endl;
-
-    //std::string badcmd = "hgfhdgf";
-    const std::string badcmd = "hgfhdgf 2>/dev/null";
 
     {
         // check is_open() works 
@@ -905,6 +905,92 @@ int main()
         wcout << L"Read: " << gcount << L" chars." << endl;
     }
 
+#if __cplusplus >= 201103L
+    clog << "# Testing move semantics\n";
+    {
+      ipstream is("echo foo bar baz & echo oof rab zab >&2",
+                  pstreams::pstdout|pstreams::pstderr);
+      is >> str;
+      ipstream is2 = std::move(is);
+      print_result(is2, str == "foo");
+      check_fail(is >> str);
+      is2 >> str;
+      print_result(is2, str == "bar");
+      is2.err();
+      is2 >> str;
+      print_result(is2, str == "oof");
+      is = std::move(is2);
+      check_fail(is2 >> str);
+      is >> str;
+      print_result(is, str == "rab");
+      is.out();
+      is >> str;
+      print_result(is, str == "baz");
+      swap(is, is2);
+      check_fail(is2 >> str);
+      is2.clear();
+      is2.err();
+      is2 >> str;
+      print_result(is2, str == "zab");
+
+      // Check moved-from stream can be re-opened and re-used
+      is.clear();
+      is.open("echo xyzzy >&2", pstreams::pstderr);
+      is >> str;
+      print_result(is, str == "xyzzy");
+      check_fail(is >> str);
+
+      is2.close();
+      swap(is, is2);
+      is.clear();
+      is.open("echo fnord");
+      is >> str;
+      clog << str << '\n';
+      print_result(is, str == "fnord");
+      check_fail(is >> str);
+    }
+
+    {
+      opstream os("awk 'END { if (NR < 3) exit(1) }'");
+      os << "1\n";
+      opstream os2 = std::move(os);
+      check_fail(os << 1);
+      check_pass(os2 << "2\n");
+      os = std::move(os2);
+      check_fail(os2 << 2);
+      check_pass(os << "3\n" << peof);
+      int ex = os.close();
+      print_result(os, ex == 0);
+
+      // Check moved-from stream can be re-opened and re-used
+      os2.clear();
+      os2.open("grep needle >/dev/null");
+      os2 << "hhhaaayyyssstttaaaccckkkneedlehaystack";
+      ex = os2.close();
+      print_result(os2, ex == 0);
+    }
+
+    {
+      pstream ps("sort");
+      ps << "one\n";
+      pstream ps2 = std::move(ps);
+      check_fail(ps << 1);
+      ps2 << "two\n";
+      check_pass(ps2);
+      ps = std::move(ps2);
+      check_fail(ps2 << 1);
+      ps << "three\n";
+      check_pass(ps);
+      swap(ps, ps2);
+      check_fail(ps << 1);
+      ps2 << "four\n";
+      check_pass(ps2);
+      swap(ps, ps2);
+      ps << peof;
+      str.assign(std::istreambuf_iterator<char>(ps), {});
+      check_pass(ps, str == "four\none\nthree\ntwo\n");
+    }
+#endif
 
     return exit_status;
 }

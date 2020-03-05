@@ -43,7 +43,7 @@
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0102   // 1.0.2
+#define PSTREAMS_VERSION 0x0103   // 1.0.3
 
 /**
  *  @namespace redi
@@ -115,6 +115,12 @@ namespace redi
       basic_pstreambuf( const std::string& file,
                         const argv_type& argv,
                         pmode mode );
+
+#if __cplusplus >= 201103L
+      basic_pstreambuf(basic_pstreambuf&&) noexcept;
+      basic_pstreambuf& operator=(basic_pstreambuf&&) noexcept;
+      void swap(basic_pstreambuf&) noexcept;
+#endif
 
       /// Destructor.
       ~basic_pstreambuf();
@@ -247,8 +253,12 @@ namespace redi
       switch_read_buffer(buf_read_src);
 
     private:
+#if __cplusplus >= 201103L
+      using basic_streambuf = std::basic_streambuf<char_type, traits_type>;
+#else
       basic_pstreambuf(const basic_pstreambuf&);
       basic_pstreambuf& operator=(const basic_pstreambuf&);
+#endif
 
       void
       init_rbuffers();
@@ -273,6 +283,7 @@ namespace redi
     {
     protected:
       typedef basic_pstreambuf<CharT, Traits>       streambuf_type;
+      typedef std::basic_ios<CharT, Traits>         ios_type;
 
       typedef pstreams::pmode                       pmode;
       typedef pstreams::argv_type                   argv_type;
@@ -289,6 +300,31 @@ namespace redi
       /// Pure virtual destructor.
       virtual
       ~pstream_common() = 0;
+
+#if __cplusplus >= 201103L
+      pstream_common(pstream_common&& rhs) noexcept
+      : command_(std::move(rhs.command_))
+      , buf_(std::move(rhs.buf_))
+      {
+        /* derived class is responsible for ios_type::move(rhs) happening */
+      }
+
+      pstream_common&
+      operator=(pstream_common&& rhs) noexcept
+      {
+        command_ = std::move(rhs.command_);
+        buf_ = std::move(rhs.buf_);
+        return *this;
+      }
+
+      void
+      swap(pstream_common& rhs) noexcept
+      {
+        /* derived class is responsible for ios_type::swap(rhs) happening */
+        command_.swap(rhs.command_);
+        buf_.swap(rhs.buf_);
+      }
+#endif // C++11
 
       /// Start a process.
       void
@@ -422,7 +458,27 @@ namespace redi
         basic_ipstream(std::initializer_list<T> args, pmode mode = pstdout)
         : basic_ipstream(argv_type(args.begin(), args.end()), mode)
         { }
-#endif
+
+      basic_ipstream(basic_ipstream&& rhs)
+      : istream_type(std::move(rhs))
+      , pbase_type(std::move(rhs))
+      { istream_type::set_rdbuf(std::addressof(pbase_type::buf_)); }
+
+      basic_ipstream&
+      operator=(basic_ipstream&& rhs)
+      {
+        istream_type::operator=(std::move(rhs));
+        pbase_type::operator=(std::move(rhs));
+        return *this;
+      }
+
+      void
+      swap(basic_ipstream& rhs)
+      {
+        istream_type::swap(rhs);
+        pbase_type::swap(rhs);
+      }
+#endif // C++11
 
       /**
        * @brief Destructor.
@@ -581,7 +637,27 @@ namespace redi
         basic_opstream(std::initializer_list<T> args, pmode mode = pstdin)
         : basic_opstream(argv_type(args.begin(), args.end()), mode)
         { }
-#endif
+
+      basic_opstream(basic_opstream&& rhs)
+      : ostream_type(std::move(rhs))
+      , pbase_type(std::move(rhs))
+      { ostream_type::set_rdbuf(std::addressof(pbase_type::buf_)); }
+
+      basic_opstream&
+      operator=(basic_opstream&& rhs)
+      {
+        ostream_type::operator=(std::move(rhs));
+        pbase_type::operator=(std::move(rhs));
+        return *this;
+      }
+
+      void
+      swap(basic_opstream& rhs)
+      {
+        ostream_type::swap(rhs);
+        pbase_type::swap(rhs);
+      }
+#endif // C++11
 
       /**
        * @brief Destructor
@@ -721,7 +797,27 @@ namespace redi
         basic_pstream(std::initializer_list<T> l, pmode mode = pstdout|pstdin)
         : basic_pstream(argv_type(l.begin(), l.end()), mode)
         { }
-#endif
+
+      basic_pstream(basic_pstream&& rhs)
+      : iostream_type(std::move(rhs))
+      , pbase_type(std::move(rhs))
+      { iostream_type::set_rdbuf(std::addressof(pbase_type::buf_)); }
+
+      basic_pstream&
+      operator=(basic_pstream&& rhs)
+      {
+        iostream_type::operator=(std::move(rhs));
+        pbase_type::operator=(std::move(rhs));
+        return *this;
+      }
+
+      void
+      swap(basic_pstream& rhs)
+      {
+        iostream_type::swap(rhs);
+        pbase_type::swap(rhs);
+      }
+#endif // C++11
 
       /**
        * @brief Destructor
@@ -894,7 +990,31 @@ namespace redi
         basic_rpstream(std::initializer_list<T> l, pmode mode = pstdout|pstdin)
         : basic_rpstream(argv_type(l.begin(), l.end()), mode)
         { }
+
+      // TODO: figure out how to move istream and ostream bases separately,
+      // but so the virtual basic_ios base is only modified once.
+#if 0
+      basic_rpstream(basic_rpstream&& rhs)
+      : iostream_type(std::move(rhs))
+      , pbase_type(std::move(rhs))
+      { iostream_type::set_rdbuf(std::addressof(pbase_type::buf_)); }
+
+      basic_rpstream&
+      operator=(basic_rpstream&& rhs)
+      {
+        iostream_type::operator=(std::move(rhs));
+        pbase_type::operator=(std::move(rhs));
+        return *this;
+      }
+
+      void
+      swap(basic_rpstream& rhs)
+      {
+        iostream_type::swap(rhs);
+        pbase_type::swap(rhs);
+      }
 #endif
+#endif // C++11
 
       /// Destructor
       ~basic_rpstream() { }
@@ -1080,6 +1200,64 @@ namespace redi
     {
       close();
     }
+
+#if __cplusplus >= 201103L
+  /**
+   * Move constructor.
+   */
+  template <typename C, typename T>
+    inline
+    basic_pstreambuf<C,T>::basic_pstreambuf( basic_pstreambuf&& rhs ) noexcept
+    : basic_streambuf(static_cast<const basic_streambuf&>(rhs))
+    , ppid_(rhs.ppid_)
+    , wpipe_(rhs.wpipe_)
+    , rpipe_{rhs.rpipe_[0], rhs.rpipe_[1]}
+    , wbuffer_(rhs.wbuffer_)
+    , rbuffer_{rhs.rbuffer_[0], rhs.rbuffer_[1]}
+    , rbufstate_{rhs.rbufstate_[0], rhs.rbufstate_[1], rhs.rbufstate_[2]}
+    , rsrc_(rhs.rsrc_)
+    , status_(rhs.status_)
+    , error_(rhs.error_)
+    {
+      rhs.ppid_ = -1;
+      rhs.wpipe_ = -1;
+      rhs.rpipe_[0] = rhs.rpipe_[1] = -1;
+      rhs.wbuffer_ = nullptr;
+      rhs.rbuffer_[0] = rhs.rbuffer_[1] = nullptr;
+      rhs.rbufstate_[0] = rhs.rbufstate_[1] = rhs.rbufstate_[2] = nullptr;
+      rhs.rsrc_ = rsrc_out;
+      rhs.status_ = -1;
+      rhs.error_ = 0;
+      rhs.setg(nullptr, nullptr, nullptr);
+      rhs.setp(nullptr, nullptr);
+    }
+
+  template <typename C, typename T>
+    inline basic_pstreambuf<C,T>&
+    basic_pstreambuf<C,T>::operator=( basic_pstreambuf&& rhs ) noexcept
+    {
+      close();
+      basic_streambuf::operator=(static_cast<const basic_streambuf&>(rhs));
+      swap(rhs);
+      return *this;
+    }
+
+  template <typename C, typename T>
+    inline void
+    basic_pstreambuf<C,T>::swap( basic_pstreambuf& rhs ) noexcept
+    {
+      basic_streambuf::swap(static_cast<basic_streambuf&>(rhs));
+      std::swap(ppid_, rhs.ppid_);
+      std::swap(wpipe_, rhs.wpipe_);
+      std::swap(rpipe_, rhs.rpipe_);
+      std::swap(wbuffer_, rhs.wbuffer_);
+      std::swap(rbuffer_, rhs.rbuffer_);
+      std::swap(rbufstate_, rhs.rbufstate_);
+      std::swap(rsrc_, rhs.rsrc_);
+      std::swap(status_, rhs.status_);
+      std::swap(error_, rhs.error_);
+    }
+#endif // C++11
 
   /**
    * Starts a new process by passing @a command to the shell (/bin/sh)
