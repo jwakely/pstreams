@@ -43,7 +43,7 @@
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0101   // 1.0.1
+#define PSTREAMS_VERSION 0x0102   // 1.0.2
 
 /**
  *  @namespace redi
@@ -1009,12 +1009,14 @@ namespace redi
     basic_pstreambuf<C,T>::basic_pstreambuf()
     : ppid_(-1)   // initialise to -1 to indicate no process run yet.
     , wpipe_(-1)
-    , wbuffer_(NULL)
+    , wbuffer_()
+    , rbuffer_()
+    , rbufstate_()
     , rsrc_(rsrc_out)
     , status_(-1)
     , error_(0)
     {
-      init_rbuffers();
+      rpipe_[rsrc_out] = rpipe_[rsrc_err] = -1;
     }
 
   /**
@@ -1030,12 +1032,14 @@ namespace redi
     basic_pstreambuf<C,T>::basic_pstreambuf(const std::string& cmd, pmode mode)
     : ppid_(-1)   // initialise to -1 to indicate no process run yet.
     , wpipe_(-1)
-    , wbuffer_(NULL)
+    , wbuffer_()
+    , rbuffer_()
+    , rbufstate_()
     , rsrc_(rsrc_out)
     , status_(-1)
     , error_(0)
     {
-      init_rbuffers();
+      rpipe_[rsrc_out] = rpipe_[rsrc_err] = -1;
       open(cmd, mode);
     }
 
@@ -1055,12 +1059,14 @@ namespace redi
                                              pmode mode )
     : ppid_(-1)   // initialise to -1 to indicate no process run yet.
     , wpipe_(-1)
-    , wbuffer_(NULL)
+    , wbuffer_()
+    , rbuffer_()
+    , rbufstate_()
     , rsrc_(rsrc_out)
     , status_(-1)
     , error_(0)
     {
-      init_rbuffers();
+      rpipe_[rsrc_out] = rpipe_[rsrc_err] = -1;
       open(file, argv, mode);
     }
 
@@ -1453,9 +1459,15 @@ namespace redi
     }
 
   /**
-   *  Called on construction to initialise the arrays used for reading.
+   *  Used to be called on construction to initialise the arrays for reading.
+   *  No longer used.
    */
   template <typename C, typename T>
+#if __cplusplus >= 201103L && __has_cpp_attribute(deprecated)
+    [[deprecated]]
+#elif __GNUC__
+    __attribute__((deprecated))
+#endif
     inline void
     basic_pstreambuf<C,T>::init_rbuffers()
     {
