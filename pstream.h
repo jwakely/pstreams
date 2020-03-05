@@ -82,6 +82,11 @@ namespace redi
   protected:
     enum { bufsz = 32 };  ///< Size of pstreambuf buffers.
     enum { pbsz  = 2 };   ///< Number of putback characters kept.
+
+#if __cplusplus >= 201103L
+    template<typename T>
+      using stringable = decltype((void)std::string(std::declval<const T&>()));
+#endif
   };
 
   /// Class template for stream buffer.
@@ -412,7 +417,7 @@ namespace redi
       { }
 
 #if __cplusplus >= 201103L
-      template<typename T>
+      template<typename T, typename = stringable<T>>
         explicit
         basic_ipstream(std::initializer_list<T> args, pmode mode = pstdout)
         : basic_ipstream(argv_type(args.begin(), args.end()), mode)
@@ -571,7 +576,7 @@ namespace redi
        * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, const argv_type&, pmode)
        */
-      template<typename T>
+      template<typename T, typename = stringable<T>>
         explicit
         basic_opstream(std::initializer_list<T> args, pmode mode = pstdin)
         : basic_opstream(argv_type(args.begin(), args.end()), mode)
@@ -711,7 +716,7 @@ namespace redi
        * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, const argv_type&, pmode)
        */
-      template<typename T>
+      template<typename T, typename = stringable<T>>
         explicit
         basic_pstream(std::initializer_list<T> l, pmode mode = pstdout|pstdin)
         : basic_pstream(argv_type(l.begin(), l.end()), mode)
@@ -884,7 +889,7 @@ namespace redi
        * @param mode  the I/O mode to use when opening the pipe.
        * @see   do_open(const std::string&, const argv_type&, pmode)
        */
-      template<typename T>
+      template<typename T, typename = stringable<T>>
         explicit
         basic_rpstream(std::initializer_list<T> l, pmode mode = pstdout|pstdin)
         : basic_rpstream(argv_type(l.begin(), l.end()), mode)

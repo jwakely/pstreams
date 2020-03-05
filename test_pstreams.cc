@@ -908,3 +908,20 @@ int main()
 
     return exit_status;
 }
+
+#if __cplusplus >= 201103L
+using std::is_constructible;
+using std::initializer_list;
+static_assert(is_constructible<ipstream, initializer_list<char*>>::value,
+    "initializer-list constructor accepts string-like types");
+static_assert(is_constructible<opstream, initializer_list<char*>>::value,
+    "initializer-list constructor accepts string-like types");
+static_assert(is_constructible<pstream, initializer_list<char*>>::value,
+    "initializer-list constructor accepts string-like types");
+static_assert(!is_constructible<ipstream, initializer_list<int>>::value,
+    "initializer-list constructor doesn't accept bogus types");
+static_assert(!is_constructible<opstream, initializer_list<int>>::value,
+    "initializer-list constructor doesn't accept bogus types");
+static_assert(!is_constructible<pstream, initializer_list<int>>::value,
+    "initializer-list constructor doesn't accept bogus types");
+#endif
