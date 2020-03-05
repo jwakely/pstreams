@@ -1463,7 +1463,7 @@ namespace redi
    *  No longer used.
    */
   template <typename C, typename T>
-#if __cplusplus >= 201103L && __has_cpp_attribute(deprecated)
+#if __cplusplus >= 201402L && __has_cpp_attribute(deprecated)
     [[deprecated]]
 #elif __GNUC__
     __attribute__((deprecated))
