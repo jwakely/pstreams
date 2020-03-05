@@ -872,8 +872,8 @@ namespace redi
        */
       explicit
       basic_rpstream(const argv_type& argv, pmode mode = pstdout|pstdin)
-      : ostream_type(NULL), istream_type(NULL),
-        pbase_type(argv.at(0), argv, mode)
+      : ostream_type(NULL), istream_type(NULL)
+      , pbase_type(argv.at(0), argv, mode)
       { }
 
 #if __cplusplus >= 201103L
