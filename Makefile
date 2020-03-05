@@ -37,7 +37,7 @@ check run_tests test: all
 check-werror:
 	@$(MAKE) EXTRA_CXXFLAGS=-Werror all check
 
-test_%: test_%.cc pstream.h
+test_%: test_%.cc pstream.h FORCE
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(LDFLAGS) -o $@ $<
 
 MANIFEST: Makefile
@@ -84,6 +84,6 @@ install:
 pstreams.wout:
 	@echo "Wide Load" | iconv -f ascii -t UTF-32 > $@
 
-.PHONY: TODO check test run_tests dist srpm
+.PHONY: TODO check test run_tests dist srpm FORCE
 .INTERMEDIATE: $(GENERATED_FILES) pstreams-$(VERS) pstreams-docs-$(VERS)
 
