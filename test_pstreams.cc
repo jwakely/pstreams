@@ -654,7 +654,7 @@ int main()
         char c;
         std::string s;
         ipstream in("echo 'abc' >&2", pstreambuf::pstderr);
-        print_result(in, getline(in, s));
+        print_result(in, (bool)getline(in, s));
         print_result(in, s == "abc");
         check_fail(in.get(c));
         in.close();
@@ -662,7 +662,7 @@ int main()
         s.erase();
 
         in.open("echo 'abc'", pstreambuf::pstdout);
-        print_result(in, getline(in, s));
+        print_result(in, (bool)getline(in, s));
         print_result(in, s == "abc");
         check_fail(in.get(c));
         in.close();
@@ -670,7 +670,7 @@ int main()
         s.erase();
 
         in.open("echo 'abc' >&2", pstreambuf::pstderr);
-        print_result(in, getline(in, s));
+        print_result(in, (bool)getline(in, s));
         print_result(in, s == "abc");
         check_fail(in.get(c));
         in.close();
@@ -889,7 +889,7 @@ int main()
         std::wstring s;
         in >> s;
         wcout << s;
-        print_result(dummy, in);
+        print_result(dummy, (bool)in);
 
         wchar_t wc;
         int count=0, gcount=0;
