@@ -7,7 +7,10 @@ License:        Boost
 URL:            http://pstreams.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/pstreams/pstreams-%{version}.tar.gz
 
+BuildRequires:  gcc-c++
 BuildRequires:  doxygen
+BuildRequires:  perl
+BuildRequires:  gawk
 BuildArch:      noarch
 
 %description
@@ -20,17 +23,20 @@ library.
 
 %build
 make %{?_smp_mflags}
+make docs
 
 %install
 make install  DESTDIR=$RPM_BUILD_ROOT includedir=%{_includedir}
 
 %files
-%doc doc/html LICENSE_1_0.txt README AUTHORS ChangeLog
+%license LICENSE_1_0.txt
+%doc doc/html README AUTHORS ChangeLog
 %{_includedir}/pstreams
 
 %changelog
 * Wed Jun 10 2020 Jonathan Wakely <pstreams@kayari.org> - 1.0.3-1
 - Update version
+- Add additional BuildRequires packages
 
 * Thu Feb 15 2018 Jonathan Wakely <jwakely@redhat.com> - 1.0.1-2
 - Remove unnecessary Group tag and cleanup.
