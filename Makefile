@@ -22,7 +22,7 @@ INSTALL_DATA = $(INSTALL) -p -v -m 0644
 SOURCES = pstream.h
 TESTS = test_pstreams test_minimum
 GENERATED_FILES = ChangeLog MANIFEST
-EXTRA_FILES = AUTHORS LICENSE_1_0.txt Doxyfile INSTALL Makefile README \
+EXTRA_FILES = AUTHORS LICENSE_1_0.txt Doxyfile INSTALL.md Makefile README \
 	    mainpage.html test_pstreams.cc test_minimum.cc pstreams-devel.spec
 
 DIST_FILES = $(SOURCES) $(GENERATED_FILES) $(EXTRA_FILES)
