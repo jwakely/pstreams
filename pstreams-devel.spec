@@ -1,6 +1,6 @@
 Name:           pstreams-devel
-Version:        1.0.1
-Release:        2%{?dist}
+Version:        1.0.3
+Release:        1%{?dist}
 Summary:        POSIX Process Control in C++
 
 License:        Boost
@@ -29,6 +29,9 @@ make install  DESTDIR=$RPM_BUILD_ROOT includedir=%{_includedir}
 %{_includedir}/pstreams
 
 %changelog
+* Wed Jun 10 2020 Jonathan Wakely <pstreams@kayari.org> - 1.0.3-1
+- Update version
+
 * Thu Feb 15 2018 Jonathan Wakely <jwakely@redhat.com> - 1.0.1-2
 - Remove unnecessary Group tag and cleanup.
 
