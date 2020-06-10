@@ -28,7 +28,8 @@ EXTRA_FILES = AUTHORS LICENSE_1_0.txt Doxyfile INSTALL.md Makefile README \
 
 DIST_FILES = $(SOURCES) $(GENERATED_FILES) $(EXTRA_FILES)
 
-VERS := $(shell awk -F' ' '/^\#define *PSTREAMS_VERSION/{ print $$NF }' pstream.h)
+HASH := \#
+VERS := $(shell awk -F' ' '/^$(HASH)define *PSTREAMS_VERSION/{ print $$NF }' pstream.h)
 
 all: $(TESTS) | pstreams.wout
 
