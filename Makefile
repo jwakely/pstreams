@@ -1,10 +1,11 @@
 # PStreams Makefile
 
-#        Copyright (C) 2001 - 2017 Jonathan Wakely
+#        Copyright (C) 2001 - 2020 Jonathan Wakely
 # Distributed under the Boost Software License, Version 1.0.
 #    (See accompanying file LICENSE_1_0.txt or copy at
 #          http://www.boost.org/LICENSE_1_0.txt)
 #
+# SPDX-License-Identifier: BSL-1.0
 
 # TODO configure script (allow doxygenating of EVISCERATE functions)
 
