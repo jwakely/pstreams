@@ -81,8 +81,10 @@ namespace redi
     static const pmode newpg   = std::ios_base::trunc;
 
   protected:
-    enum { bufsz = 32 };  ///< Size of pstreambuf buffers.
-    enum { pbsz  = 2 };   ///< Number of putback characters kept.
+    enum {
+      bufsz = 32, ///< Size of pstreambuf buffers.
+      pbsz  = 2   ///< Number of putback characters kept.
+    };
 
 #if __cplusplus >= 201103L
     template<typename T>
