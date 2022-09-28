@@ -1,6 +1,6 @@
 # PStreams Makefile
 
-#        Copyright (C) 2001 - 2020 Jonathan Wakely
+#        Copyright (C) 2001 - 2022 Jonathan Wakely
 # Distributed under the Boost Software License, Version 1.0.
 #    (See accompanying file LICENSE_1_0.txt or copy at
 #          http://www.boost.org/LICENSE_1_0.txt)
@@ -13,7 +13,7 @@ OPTIM= -O1 -g3
 EXTRA_CXXFLAGS=
 
 CFLAGS=-pedantic -Wall -Wextra -Wpointer-arith -Wcast-qual -Wcast-align -Wredundant-decls -Wshadow $(OPTIM)
-CXXFLAGS=$(CFLAGS) -std=c++98 -Woverloaded-virtual
+CXXFLAGS=$(CFLAGS) -Woverloaded-virtual
 
 prefix = /usr/local
 includedir = $(prefix)/include
@@ -34,12 +34,21 @@ VERS := $(shell awk -F' ' '/^$(HASH)define *PSTREAMS_VERSION/{ print $$NF }' pst
 all: $(TESTS) | pstreams.wout
 
 check run_tests test: all
-	@for test in $(TESTS) ; do echo $$test ; ./$$test >/dev/null 2>&1 || echo "$$test EXITED WITH STATUS $$?" ; done
+	@status=0 ; \
+	log=`mktemp test.XXXXXX` ; \
+	for test in $(TESTS) ; do \
+	printf "Running %-20s ... " $$test ; \
+	./$$test >$$log 2>&1 && echo OK && continue ; \
+	echo "FAILED [exit status $$?]" ; cat $$log >&2 ; status=1; \
+	done ; \
+	rm $$log ; \
+	exit $$status
 
 check-werror:
-	@$(MAKE) EXTRA_CXXFLAGS=-Werror all check
+	@$(MAKE) EXTRA_CXXFLAGS+=-Werror all check
 
 test_%: test_%.cc pstream.h FORCE
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(LDFLAGS) -o $@ $< -std=c++98
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(LDFLAGS) -o $@ $<
 
 MANIFEST: Makefile
@@ -89,3 +98,4 @@ pstreams.wout:
 .PHONY: TODO check test run_tests dist srpm FORCE
 .INTERMEDIATE: $(GENERATED_FILES) pstreams-$(VERS) pstreams-docs-$(VERS)
 
+# vim: sw=2 ts=8 noexpandtab
