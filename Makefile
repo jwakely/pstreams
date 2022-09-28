@@ -34,10 +34,22 @@ VERS := $(shell awk -F' ' '/^$(HASH)define *PSTREAMS_VERSION/{ print $$NF }' pst
 all: $(TESTS) | pstreams.wout
 
 check run_tests test: all
-	@for test in $(TESTS) ; do echo $$test ; ./$$test >/dev/null 2>&1 || echo "$$test EXITED WITH STATUS $$?" ; done
+	@for t in $(TESTS) ; do \
+	  echo $$t ; \
+	  ./$$t >/dev/null 2>&1 || echo "$$t EXITED WITH STATUS $$?" ; \
+	done
 
-check-werror:
-	@$(MAKE) EXTRA_CXXFLAGS=-Werror all check
+# TODO why does valgrind cause some tests to hang?
+check-valgrind: all
+	@for t in $(TESTS) ; do \
+	  echo $$t ; \
+	  valgrind --track-fds=yes ./$$t \
+	    || echo "$$t EXITED WITH STATUS $$?" ; \
+	  echo ; \
+	done
+
+check-werror: EXTRA_CXXFLAGS := -Werror
+check-werror: check
 
 test_%: test_%.cc pstream.h FORCE
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(LDFLAGS) -o $@ $<
@@ -89,3 +101,4 @@ pstreams.wout:
 .PHONY: TODO check test run_tests dist srpm FORCE
 .INTERMEDIATE: $(GENERATED_FILES) pstreams-$(VERS) pstreams-docs-$(VERS)
 
+# vim: sw=2 ts=8 noexpandtab
