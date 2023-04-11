@@ -247,18 +247,25 @@ int main()
 
     {
         // test execve() style construction
-        // should print date on stdout, prefixed by "STDOUT: "
+        // should print date on stdout twice, each prefixed by "STDOUT: "
 
         pstreams::argv_type argv;
         argv.push_back("date");
+        argv.push_back("+%s %c");
         ipstream is1(argv[0], argv);
         ipstream is2(argv);
+        unsigned long t1, t2;
         std::string s1, s2;
-        getline(is1, s1);
-        getline(is2, s2);
-        cout << "STDOUT:  " << s1 << endl;
-        print_result(is1, !s1.empty());
-        print_result(is2, s1 == s2);
+        getline(is1 >> t1, s1);
+        getline(is2 >> t2, s2);
+        cout << "STDOUT:  " << t1 << s1 << endl;
+        cout << "STDOUT:  " << t2 << s2 << endl;
+        print_result(is1, !s1.empty() && s1.length() == s2.length());
+        if (t1 == t2)
+          print_result(is2, s1 == s2);
+        else
+          // This assumes it takes less than 1s to run the two 'date' commands:
+          print_result(is2, (t2 - t1) == 1);
     }
 
     {
