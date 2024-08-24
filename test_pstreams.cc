@@ -1002,7 +1002,7 @@ int main()
     clog << "# Testing rpstream move semantics\n";
     {
       std::string line;
-      std::string sh = "while read line; do"
+      std::string sh = "while read line; do "
         "if [ \"$line\" = error ]; then echo ERROR >&2;"
         "else echo \"$line\";"
         "fi;"
