@@ -38,6 +38,22 @@ This can be done with "make check" if you have GNU or BSD make.
 The Makefile doesn't work with Solaris make, and probably other versions
 of make.
 
+Release notes for PStreams 1.0.4
+================================
+
+Added move semantics for the rpstream class.
+
+Release notes for PStreams 1.0.3
+================================
+
+Added move semantics for the pstream, ipstream and opstream classes.
+
+Release notes for PStreams 1.0.2
+================================
+
+pstream::close() returns the child's exit status now.
+Deprecated pstreambuf::init_rbuffers().
+
 Release notes for PStreams 1.0.1
 ================================
 
