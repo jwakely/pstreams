@@ -1,6 +1,6 @@
 // PStreams - POSIX Process I/O for C++
 
-//        Copyright (C) 2001 - 2020 Jonathan Wakely
+//        Copyright (C) 2001 - 2024 Jonathan Wakely
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -44,7 +44,7 @@
 
 
 /// The library version.
-#define PSTREAMS_VERSION 0x0103   // 1.0.3
+#define PSTREAMS_VERSION 0x0104   // 1.0.4
 
 /**
  *  @namespace redi
@@ -994,29 +994,24 @@ namespace redi
         : basic_rpstream(argv_type(l.begin(), l.end()), mode)
         { }
 
-      // TODO: figure out how to move istream and ostream bases separately,
-      // but so the virtual basic_ios base is only modified once.
-#if 0
       basic_rpstream(basic_rpstream&& rhs)
-      : iostream_type(std::move(rhs))
+      : ostream_type(NULL), istream_type(std::move(rhs))
       , pbase_type(std::move(rhs))
-      { iostream_type::set_rdbuf(std::addressof(pbase_type::buf_)); }
+      { istream_type::set_rdbuf(std::addressof(pbase_type::buf_)); }
 
       basic_rpstream&
       operator=(basic_rpstream&& rhs)
       {
-        iostream_type::operator=(std::move(rhs));
-        pbase_type::operator=(std::move(rhs));
+        swap(rhs);
         return *this;
       }
 
       void
       swap(basic_rpstream& rhs)
       {
-        iostream_type::swap(rhs);
+        istream_type::swap(rhs);
         pbase_type::swap(rhs);
       }
-#endif
 #endif // C++11
 
       /// Destructor

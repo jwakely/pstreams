@@ -998,6 +998,49 @@ int main()
       str.assign(std::istreambuf_iterator<char>(ps), {});
       check_pass(ps, str == "four\none\nthree\ntwo\n");
     }
+
+    clog << "# Testing rpstream move semantics\n";
+    {
+      std::string line;
+      std::string sh = "while read line; do"
+        "if [ \"$line\" = error ]; then echo ERROR >&2;"
+        "else echo \"$line\";"
+        "fi;"
+        "done";
+      rpstream ps("sh", {"sh", "-c", sh.c_str()}, all3streams);
+      ps << "one" << std::endl;
+      rpstream ps2 = std::move(ps);
+      check_fail(ps << 1);
+      ps2 << "two" << std::endl;
+      check_pass(ps2);
+      getline(ps2.out(), line);
+      check_pass(ps2, line == "one");
+      ps = std::move(ps2);
+      check_fail(ps2.out() >> line);
+      check_fail(ps2.err() >> line);
+      ps << "error" << std::endl;
+      getline(ps.err(), line);
+      print_result(ps, line == "ERROR");
+      getline(ps.out(), line);
+      print_result(ps, line == "two");
+      swap(ps, ps2);
+      check_fail(ps << 1);
+      ps2 << "three\nerror" << std::endl;
+      check_pass(ps2);
+      getline(ps2.err(), line);
+      print_result(ps2, line == "ERROR");
+      getline(ps2.out(), line);
+      print_result(ps2, line == "three");
+      swap(ps, ps2);
+      ps << peof;
+      ps.out() >> line;
+      print_result(ps, ps.out().eof());
+      check_fail(ps);
+      ps.clear();
+      ps.err() >> line;
+      print_result(ps, ps.err().eof());
+      check_fail(ps);
+    }
 #endif
 
     return exit_status;
