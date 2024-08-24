@@ -1853,7 +1853,7 @@ namespace redi
     inline bool
     basic_pstreambuf<C,T>::exited()
     {
-      return ppid_ == 0 || wait(true)==1;
+      return ppid_ == 0 || wait(true) == 1;
     }
 
 
