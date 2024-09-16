@@ -170,6 +170,10 @@ namespace redi
       fopen(FILE*& in, FILE*& out, FILE*& err);
 #endif
 
+      /// Obtain file descriptors for each of the process' standards streams.
+      std::size_t
+      fds(fd_type& in, fd_type& out, fd_type& err);
+
       /// Return the exit status of the process.
       int
       status() const;
@@ -360,6 +364,10 @@ namespace redi
       std::size_t
       fopen(FILE*& in, FILE*& out, FILE*& err);
 #endif
+
+      /// Obtain file descriptors for each of the process' standards streams.
+      std::size_t
+      fds(fd_type& in, fd_type& out, fd_type& err);
 
     protected:
       std::string       command_; ///< The command used to start the process.
@@ -2437,6 +2445,63 @@ namespace redi
 
 #endif // REDI_EVISCERATE_PSTREAMS
 
+  /**
+   * @warning  This function exposes the internals of the stream buffer and
+   *           should be used with caution. It is the caller's responsibility
+   *           to manage any interactions between iostream and raw I/O on the
+   *           file descriptors.
+   *
+   * @param   in    An integer that will be the process' stdin.
+   * @param   out   An integer that will be the process' stdout.
+   * @param   err   An integer that will be the process' stderr.
+   * @return  An OR of zero or more of @c pstdin, @c pstdout, @c pstderr.
+   *
+   * For each open stream shared with the child process the file descriptor
+   * used is assigned to the corresponding parameter. For closed
+   * streams @c -1 is assigned to the parameter.
+   * The return value can be tested to see which parameters are valid
+   * by masking with the corresponding @c pmode value.
+   */
+  template <typename C, typename T>
+    std::size_t
+    basic_pstreambuf<C,T>::fds(fd_type& in, fd_type& out, fd_type& err)
+    {
+      in = out = err = -1;
+      std::size_t open_files = 0;
+      if (wpipe() > -1)
+      {
+        in = wpipe();
+        open_files |= pstdin;
+      }
+      if (rpipe(rsrc_out) > -1)
+      {
+        out = rpipe(rsrc_out);
+        open_files |= pstdout;
+      }
+      if (rpipe(rsrc_err) > -1)
+      {
+        err = rpipe(rsrc_err);
+        open_files |= pstderr;
+      }
+      return open_files;
+    }
+
+  /**
+   *  @warning This function exposes the internals of the stream buffer and
+   *  should be used with caution.
+   *
+   *  @param  in   An integer that will refer to the process' stdin.
+   *  @param  out  An integer that will refer to the process' stdout.
+   *  @param  err  An integer that will refer to the process' stderr.
+   *  @return A bitwise-or of zero or more of @c pstdin, @c pstdout, @c pstderr.
+   *  @see    basic_pstreambuf::fds()
+   */
+  template <typename C, typename T>
+    inline std::size_t
+    pstream_common<C,T>::fds(fd_type& fin, fd_type& fout, fd_type& ferr)
+    {
+      return buf_.fds(fin, fout, ferr);
+    }
 
 } // namespace redi
 
